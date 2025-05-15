@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房间预约系统 - 原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            border-radius: 50px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .dynamic-island {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 126px;
+            height: 34px;
+            background-color: #000;
+            border-radius: 20px;
+            z-index: 20;
+        }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        .content {
+            padding-top: 60px;
+            height: 100%;
+            overflow: auto;
+        }
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 83px;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #e5e5e5;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+        }
+        .tab-icon {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tab-text {
+            font-size: 12px;
+            color: #666;
+        }
+        .tab-active {
+            color: #0052d9;
+        }
+        /* TDesign styles */
+        .t-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .t-btn-primary {
+            background-color: #0052d9;
+            color: white;
+        }
+        .t-btn-disabled {
+            background-color: #dcdcdc;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .t-input {
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            padding: 10px 12px;
+            width: 100%;
+            font-size: 14px;
+        }
+        .t-calendar-day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 2px;
+            font-size: 14px;
+        }
+        .t-calendar-day-available {
+            background-color: #e6f2ff;
+            color: #0052d9;
+        }
+        .t-calendar-day-unavailable {
+            background-color: #f3f3f3;
+            color: #999;
+        }
+        .t-calendar-day-selected {
+            background-color: #0052d9;
+            color: white;
+        }
+        .t-time-slot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            border-radius: 6px;
+            margin: 6px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .t-time-slot-available {
+            background-color: #e6f2ff;
+            color: #0052d9;
+            border: 1px solid #0052d9;
+        }
+        .t-time-slot-unavailable {
+            background-color: #f3f3f3;
+            color: #999;
+            border: 1px solid #dcdcdc;
+        }
+        .t-time-slot-selected {
+            background-color: #0052d9;
+            color: white;
+            border: 1px solid #0052d9;
+        }
+        .t-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 10px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="p-8">
+    <h1 class="text-3xl font-bold mb-8 text-center">房间预约系统 - 原型图</h1>
+    
+    <div class="flex flex-wrap justify-center gap-10">
+        <!-- Home Page (home.html) -->
+        <div class="phone-frame">
+            <div class="dynamic-island"></div>
+            <div class="screen">
+                <div class="content" id="home-page">
+                    <!-- Logo -->
+                    <div class="flex justify-center mt-6 mb-4">
+                        <img src="https://via.placeholder.com/120x40?text=LOGO" alt="Logo" class="h-10">
+                    </div>
+                    
+                    <!-- Carousel -->
+                    <div class="relative h-64 mx-4 overflow-hidden rounded-lg">
+                        <div class="absolute inset-0">
+                            <img src="https://via.placeholder.com/400x300?text=Image+1" alt="Carousel Image" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-white opacity-100"></div>
+                            <div class="w-2 h-2 rounded-full bg-white opacity-50"></div>
+                            <div class="w-2 h-2 rounded-full bg-white opacity-50"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Welcome Text -->
+                    <div class="px-6 mt-8 text-center">
+                        <h2 class="text-xl font-semibold text-gray-800">欢迎使用房间预约系统</h2>
+                        <p class="mt-2 text-gray-600">点击下方"预约"按钮开始进行房间预约</p>
+                    </div>
+                    
+                    <!-- Hotel Features -->
+                    <div class="p-4 mt-6 grid grid-cols-3 gap-3">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                            </div>
+                            <span class="text-xs text-gray-600">舒适空间</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs text-gray-600">24小时服务</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs text-gray-600">快速预约</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 tab-active" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
+                        <div class="tab-text tab-active">首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">预约</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">我的预约</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment Page (appointment.html) -->
+        <div class="phone-frame">
+            <div class="dynamic-island"></div>
+            <div class="screen">
+                <div class="content" id="appointment-page">
+                    <div class="px-4 pt-2 pb-6">
+                        <h2 class="text-xl font-semibold text-center mb-4">房间预约</h2>
+                        
+                        <!-- Calendar Section -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <button class="p-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <div class="text-lg font-medium">2023年5月</div>
+                                <button class="p-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <!-- Weekdays -->
+                            <div class="grid grid-cols-7 mb-2">
+                                <div class="text-center text-sm text-gray-500">日</div>
+                                <div class="text-center text-sm text-gray-500">一</div>
+                                <div class="text-center text-sm text-gray-500">二</div>
+                                <div class="text-center text-sm text-gray-500">三</div>
+                                <div class="text-center text-sm text-gray-500">四</div>
+                                <div class="text-center text-sm text-gray-500">五</div>
+                                <div class="text-center text-sm text-gray-500">六</div>
+                            </div>
+                            
+                            <!-- Calendar Days -->
+                            <div class="grid grid-cols-7">
+                                <!-- Previous month -->
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day text-gray-400">30</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day text-gray-400">31</div>
+                                </div>
+                                
+                                <!-- Current month -->
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">1</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">2</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">3</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-unavailable">4</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-unavailable">5</div>
+                                </div>
+                                
+                                <!-- Row 2 -->
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-unavailable">6</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">7</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">8</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">9</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">10</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-available">11</div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="t-calendar-day t-calendar-day-selected">12</div>
+                                </div>
+                                
+                                <!-- Additional rows would continue here -->
+                                <!-- Only showing 2 rows for brevity -->
+                            </div>
+                        </div>
+                        
+                        <!-- Time Slots Section -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-medium mb-3">选择时间段（2023年5月12日）</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="t-time-slot t-time-slot-available">10:00-12:00</div>
+                                <div class="t-time-slot t-time-slot-unavailable">12:00-14:00</div>
+                                <div class="t-time-slot t-time-slot-selected">14:00-16:00</div>
+                                <div class="t-time-slot t-time-slot-available">16:00-18:00</div>
+                                <div class="t-time-slot t-time-slot-available">18:00-20:00</div>
+                                <div class="t-time-slot t-time-slot-unavailable">20:00-22:00</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Phone Number + Submit -->
+                        <div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">手机号码</label>
+                                <input type="tel" class="t-input" placeholder="请输入您的手机号码" value="13800138000">
+                            </div>
+                            <button class="t-btn t-btn-primary w-full">提交预约</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 tab-active" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text tab-active">预约</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">我的预约</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page (profile.html) -->
+        <div class="phone-frame">
+            <div class="dynamic-island"></div>
+            <div class="screen">
+                <div class="content" id="profile-page">
+                    <div class="px-4 pt-2 pb-6">
+                        <h2 class="text-xl font-semibold text-center mb-6">我的预约</h2>
+                        
+                        <!-- Appointment List -->
+                        <div class="space-y-4">
+                            <div class="t-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-medium">2023年5月12日</div>
+                                        <div class="text-sm text-gray-600 mt-1">14:00-16:00</div>
+                                        <div class="text-sm text-gray-600 mt-1">手机号：138****8000</div>
+                                    </div>
+                                    <button class="t-btn bg-red-50 text-red-500 border border-red-200 text-sm px-3 py-1">取消预约</button>
+                                </div>
+                            </div>
+                            
+                            <div class="t-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-medium">2023年5月15日</div>
+                                        <div class="text-sm text-gray-600 mt-1">10:00-12:00</div>
+                                        <div class="text-sm text-gray-600 mt-1">手机号：138****8000</div>
+                                    </div>
+                                    <button class="t-btn bg-red-50 text-red-500 border border-red-200 text-sm px-3 py-1">取消预约</button>
+                                </div>
+                            </div>
+                            
+                            <div class="t-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="font-medium">2023年5月20日</div>
+                                        <div class="text-sm text-gray-600 mt-1">18:00-20:00</div>
+                                        <div class="text-sm text-gray-600 mt-1">手机号：138****8000</div>
+                                    </div>
+                                    <button class="t-btn bg-red-50 text-red-500 border border-red-200 text-sm px-3 py-1">取消预约</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty State (hidden) -->
+                        <div class="hidden text-center py-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <p class="text-gray-500">您还没有任何预约记录</p>
+                            <button class="t-btn t-btn-primary mt-4">立即预约</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text">预约</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 tab-active" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="tab-text tab-active">我的预约</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-10 text-gray-600">
+        <p>以上是基于 iPhone 15 Pro 尺寸 (390x844px) 开发的原型图</p>
+        <p class="mt-2">设计风格：TDesign（腾讯 Design System）</p>
+    </div>
+</body>
+</html>
