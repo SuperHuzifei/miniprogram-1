@@ -219,6 +219,17 @@
   border: 1px solid #0052d9;
 }
 
+.time-slot.cleaning {
+  background-color: #f0f0f0;
+  color: #999;
+  border: 1px solid #dcdcdc;
+}
+
+.cleaning-status {
+  color: #ff9800 !important;
+  font-size: 18rpx;
+}
+
 /* Phone Input */
 .phone-input {
   margin-bottom: 40rpx;

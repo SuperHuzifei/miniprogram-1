@@ -70,12 +70,13 @@
       <view class="time-slot-grid" wx:else>
         <block wx:for="{{timeSlots}}" wx:key="index">
           <view 
-            class="time-slot {{item.isAvailable ? 'available' : 'unavailable'}} {{item.isSelected ? 'selected' : ''}}"
+            class="time-slot {{item.isAvailable ? 'available' : 'unavailable'}} {{item.isSelected ? 'selected' : ''}} {{item.isCleaning ? 'cleaning' : ''}}"
             bindtap="selectTimeSlot"
             data-index="{{index}}"
           >
             {{item.time}}
-            <view class="time-status" wx:if="{{!item.isAvailable}}">已预约</view>
+            <view class="time-status" wx:if="{{!item.isAvailable && !item.isCleaning}}">已预约</view>
+            <view class="time-status cleaning-status" wx:if="{{item.isCleaning}}">清洁中</view>
           </view>
         </block>
       </view>

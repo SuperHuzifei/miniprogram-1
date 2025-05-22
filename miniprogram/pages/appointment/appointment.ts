@@ -165,10 +165,54 @@ Page({
         
         if (success) {
           // 添加isSelected属性
-          const timeSlots = data.map(slot => ({
+          let timeSlots = data.map(slot => ({
             ...slot,
-            isSelected: false
+            isSelected: false,
+            isCleaning: false // 添加清洁时间标记
           }));
+          
+          // 处理清洁时间：只在连续预约时间段的最后一个时间段后添加清洁时间
+          // 首先找出所有已预约的时间段
+          const bookedSlots: number[] = [];
+          timeSlots.forEach((slot, index) => {
+            if (!slot.isAvailable) {
+              bookedSlots.push(index);
+            }
+          });
+          
+          // 找出连续的已预约时间段组
+          const bookedGroups: number[][] = [];
+          let currentGroup: number[] = [];
+          
+          bookedSlots.sort((a, b) => a - b).forEach((index, i) => {
+            if (i === 0 || index !== bookedSlots[i-1] + 1) {
+              // 新的预约组
+              if (currentGroup.length > 0) {
+                bookedGroups.push([...currentGroup]);
+                currentGroup = [];
+              }
+              currentGroup.push(index);
+            } else {
+              // 连续预约
+              currentGroup.push(index);
+            }
+          });
+          
+          // 添加最后一个组
+          if (currentGroup.length > 0) {
+            bookedGroups.push([...currentGroup]);
+          }
+          
+          // 对每个预约组，只将最后一个时间段的下一个时间段标记为清洁时间
+          bookedGroups.forEach(group => {
+            const lastBookedIndex = group[group.length - 1];
+            // 检查是否有下一个时间段且不超出范围
+            if (lastBookedIndex + 1 < timeSlots.length) {
+              timeSlots[lastBookedIndex + 1].isCleaning = true;
+              // 如果是清洁时间，则不可选
+              timeSlots[lastBookedIndex + 1].isAvailable = false;
+            }
+          });
           
           this.setData({
             timeSlots,
