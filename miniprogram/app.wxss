@@ -1,10 +1,103 @@
 /**app.wxss**/
+@import './miniprogram_npm/tdesign-miniprogram/common/style/index.wxss';
+
+page {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 28rpx;
+}
+
 .container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+.page {
+  padding: 0 30rpx;
+}
+
+.text-primary {
+  color: #0052d9;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.my-4 {
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.mt-4 {
+  margin-top: 20rpx;
+}
+
+.mb-4 {
+  margin-bottom: 20rpx;
+}
+
+.mt-6 {
+  margin-top: 30rpx;
+}
+
+.mb-6 {
+  margin-bottom: 30rpx;
+}
+
+.py-6 {
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.grid-cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.grid-cols-7 {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10rpx;
 } 

@@ -2,7 +2,10 @@
 
 interface IAppOption {
   globalData: {
-    userInfo?: WechatMiniprogram.UserInfo,
+    userInfo: any | null,
+    isLogin: boolean
   }
-  userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback,
+  userInfoReadyCallback?: ((userInfo: any) => void) | null,
+  checkLoginStatus: () => void,
+  userLogin: (userInfo: any, callback?: Function) => void
 }

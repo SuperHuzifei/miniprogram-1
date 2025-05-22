@@ -1,0 +1,44 @@
+<view class="container">
+  <view class="login-header">
+    <image class="logo" src="/assets/icons/logo.png" mode="aspectFit"></image>
+    <view class="title">房间预约系统</view>
+    <view class="subtitle">请授权登录以使用完整功能</view>
+  </view>
+  
+  <view class="login-content">
+    <view class="desc-text">授权后，您将可以：</view>
+    <view class="feature-list">
+      <view class="feature-item">
+        <t-icon name="check-circle" size="40rpx" color="#0052d9" />
+        <text class="feature-text">预约房间</text>
+      </view>
+      <view class="feature-item">
+        <t-icon name="check-circle" size="40rpx" color="#0052d9" />
+        <text class="feature-text">查看和管理预约记录</text>
+      </view>
+      <view class="feature-item">
+        <t-icon name="check-circle" size="40rpx" color="#0052d9" />
+        <text class="feature-text">获取更好的个性化体验</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="login-footer">
+    <t-button theme="primary" size="large" block bind:tap="handleGetUserProfile">微信授权登录</t-button>
+    <view class="privacy-policy" bind:tap="showPrivacyPolicy">
+      登录即代表您已同意<text class="policy-link">《用户协议与隐私政策》</text>
+    </view>
+  </view>
+</view>
+
+<t-dialog
+  visible="{{showLoginFailDialog}}"
+  title="授权失败"
+  content="获取用户信息失败，部分功能将无法使用"
+  confirm-btn="重新授权"
+  cancel-btn="暂不授权"
+  bind:confirm="handleGetUserProfile"
+  bind:cancel="navigateBack"
+/>
+
+<t-message id="t-message" /> 

@@ -1,0 +1,50 @@
+// 云函数入口文件
+const cloud = require('wx-server-sdk')
+
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
+const db = cloud.database()
+
+// 云函数入口函数
+exports.main = async (event, context) => {
+  const { date } = event
+  
+  try {
+    // 定义所有时间段
+    const allTimeSlots = [
+      { time: '10:00-12:00', isAvailable: true },
+      { time: '12:00-14:00', isAvailable: true },
+      { time: '14:00-16:00', isAvailable: true },
+      { time: '16:00-18:00', isAvailable: true },
+      { time: '18:00-20:00', isAvailable: true },
+      { time: '20:00-22:00', isAvailable: true },
+    ]
+    
+    // 查询指定日期已有的预约
+    const bookedAppointments = await db.collection('appointments').where({
+      date: date,
+      isDeleted: false // 只考虑未取消的预约
+    }).get()
+    
+    // 标记已预约的时间段为不可用
+    const bookedTimes = bookedAppointments.data.map(item => item.time)
+    
+    const timeSlots = allTimeSlots.map(slot => {
+      return {
+        ...slot,
+        isAvailable: !bookedTimes.includes(slot.time)
+      }
+    })
+    
+    return {
+      success: true,
+      data: timeSlots
+    }
+  } catch (err) {
+    console.error('获取时间段失败', err)
+    return {
+      success: false,
+      message: '获取时间段失败',
+      error: err
+    }
+  }
+} 

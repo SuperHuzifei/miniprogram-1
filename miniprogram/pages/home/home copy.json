@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "t-swiper": "/miniprogram_npm/tdesign-miniprogram/swiper/swiper",
+    "t-swiper-item": "/miniprogram_npm/tdesign-miniprogram/swiper/swiper-item",
+    "t-swiper-nav": "/miniprogram_npm/miniprogram/miniprogram_npm/tdesign-miniprogram/swiper/swiper-nav",
+    "t-icon": "/miniprogram_npm/miniprogram/miniprogram_npm/tdesign-miniprogram/icon/icon"
+  },
+  "navigationBarTitleText": "房间预约系统"
+} 

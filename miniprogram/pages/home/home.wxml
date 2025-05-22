@@ -1,0 +1,56 @@
+<view class="container">
+  <!-- User Login Status -->
+  <view class="login-status">
+    <view wx:if="{{isLogin}}" class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="greeting">欢迎您，{{userInfo.nickname}}</view>
+    </view>
+    <view wx:else class="login-prompt">
+      <view class="login-text">登录后使用完整功能</view>
+      <view class="login-btn" bindtap="goToLogin">去登录</view>
+    </view>
+  </view>
+  
+  <!-- Logo -->
+  <view class="logo-container">
+    <image src="/assets/images/logo.png" mode="aspectFit" class="logo"></image>
+  </view>
+  
+  <!-- Carousel -->
+  <t-swiper class="swiper-container" current="{{current}}" autoplay="{{autoplay}}" duration="{{duration}}" interval="{{interval}}" list="{{swiperList}}" navigation="{{ { type: 'dots' } }}"></t-swiper>
+  
+  <!-- Welcome Text -->
+  <view class="welcome-text">
+    <view class="welcome-title">欢迎使用房间预约系统</view>
+    <view class="welcome-subtitle">点击下方"预约"按钮开始进行房间预约</view>
+  </view>
+  
+  <!-- Features -->
+  <view class="features">
+    <view class="feature-item">
+      <view class="feature-icon">
+        <t-icon name="home" size="48rpx" color="#0052d9"></t-icon>
+      </view>
+      <text class="feature-text">舒适空间</text>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon">
+        <t-icon name="alarm" size="48rpx" color="#0052d9"></t-icon>
+      </view>
+      <text class="feature-text">24小时服务</text>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon">
+        <t-icon name="check-circle" size="48rpx" color="#0052d9"></t-icon>
+      </view>
+      <text class="feature-text">快速预约</text>
+    </view>
+  </view>
+  
+  <!-- Appointment Button -->
+  <view class="appointment-btn">
+    <t-button theme="primary" size="large" block bindtap="goToAppointment">
+      {{isLogin ? '立即预约' : '登录后预约'}}
+    </t-button>
+  </view>
+</view> 

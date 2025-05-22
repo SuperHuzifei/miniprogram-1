@@ -1,0 +1,66 @@
+<view class="container">
+  <!-- User Info -->
+  <view class="user-info">
+    <view wx:if="{{isLogin}}" class="user-info-content">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="nickname">{{userInfo.nickname}}</view>
+    </view>
+    <view wx:else class="user-info-content not-login">
+      <image class="avatar" src="/assets/icons/default-avatar.png" mode="aspectFill"></image>
+      <view class="login-tip">请授权登录后使用</view>
+      <t-button theme="primary" size="small" bind:tap="goToLogin">去登录</t-button>
+    </view>
+  </view>
+  
+  <view class="header py-6">
+    <text class="header-title text-center">我的预约</text>
+  </view>
+  
+  <!-- Not Login Tip -->
+  <view class="not-login-tip" wx:if="{{!isLogin}}">
+    <t-icon name="info-circle" size="96rpx" class="info-icon"></t-icon>
+    <view class="tip-text">请先登录后查看预约记录</view>
+  </view>
+  
+  <!-- Appointment List -->
+  <view class="appointment-list" wx:if="{{isLogin && appointments.length > 0}}">
+    <block wx:for="{{appointments}}" wx:key="index">
+      <t-cell-group>
+        <view class="appointment-card">
+          <view class="appointment-info">
+            <view class="appointment-date font-bold">{{item.dateFormatted}}</view>
+            <view class="appointment-time mt-2">{{item.time}}</view>
+            <view class="appointment-phone mt-2">手机号：{{item.phoneFormatted}}</view>
+          </view>
+          <view class="appointment-action">
+            <t-button theme="danger" size="small" variant="outline" bindtap="cancelAppointment" data-id="{{item._id}}">取消预约</t-button>
+          </view>
+        </view>
+      </t-cell-group>
+    </block>
+  </view>
+  
+  <!-- Empty State -->
+  <view class="empty-state py-6" wx:if="{{isLogin && appointments.length === 0}}">
+    <t-icon name="calendar" size="96rpx" class="empty-icon"></t-icon>
+    <view class="empty-text mt-4">您还没有任何预约记录</view>
+    <view class="mt-6">
+      <t-button theme="primary" size="medium" bindtap="goToAppointment">立即预约</t-button>
+    </view>
+  </view>
+  
+  <!-- Loading -->
+  <view class="loading-container py-6" wx:if="{{loading}}">
+    <t-loading theme="circular" size="80rpx" text="加载中..."></t-loading>
+  </view>
+</view>
+
+<!-- Confirm Dialog -->
+<t-dialog visible="{{showConfirmDialog}}" title="确认取消" confirm-btn="确定" cancel-btn="取消" bind:confirm="confirmCancel" bind:cancel="closeDialog">
+  <view slot="content">
+    确定要取消该预约吗？
+  </view>
+</t-dialog>
+
+<!-- Message -->
+<t-message id="t-message" /> 
