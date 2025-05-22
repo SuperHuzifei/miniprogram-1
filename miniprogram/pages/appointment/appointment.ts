@@ -13,14 +13,22 @@ Page({
     selectedDate: null,
     selectedDateFormatted: '',
     timeSlots: [
-      { time: '10:00-12:00', isAvailable: true, isSelected: false },
-      { time: '12:00-14:00', isAvailable: true, isSelected: false },
-      { time: '14:00-16:00', isAvailable: true, isSelected: false },
-      { time: '16:00-18:00', isAvailable: true, isSelected: false },
-      { time: '18:00-20:00', isAvailable: true, isSelected: false },
-      { time: '20:00-22:00', isAvailable: true, isSelected: false },
+      { time: '10:00-11:00', isAvailable: true, isSelected: false },
+      { time: '11:00-12:00', isAvailable: true, isSelected: false },
+      { time: '12:00-13:00', isAvailable: true, isSelected: false },
+      { time: '13:00-14:00', isAvailable: true, isSelected: false },
+      { time: '14:00-15:00', isAvailable: true, isSelected: false },
+      { time: '15:00-16:00', isAvailable: true, isSelected: false },
+      { time: '16:00-17:00', isAvailable: true, isSelected: false },
+      { time: '17:00-18:00', isAvailable: true, isSelected: false },
+      { time: '18:00-19:00', isAvailable: true, isSelected: false },
+      { time: '19:00-20:00', isAvailable: true, isSelected: false },
+      { time: '20:00-21:00', isAvailable: true, isSelected: false },
+      { time: '21:00-22:00', isAvailable: true, isSelected: false },
+      { time: '22:00-23:00', isAvailable: true, isSelected: false },
+      { time: '23:00-23:59', isAvailable: true, isSelected: false },
     ],
-    selectedTimeSlot: null,
+    selectedTimeSlots: [], // 选中的时间段索引数组
     phoneNumber: '',
     loadingTimeSlots: false,
   },
@@ -165,7 +173,7 @@ Page({
           this.setData({
             timeSlots,
             loadingTimeSlots: false,
-            selectedTimeSlot: null
+            selectedTimeSlots: []
           });
         } else {
           Message.error({
@@ -228,7 +236,7 @@ Page({
       calendarDays,
       selectedDate,
       selectedDateFormatted: formattedDate,
-      selectedTimeSlot: null
+      selectedTimeSlots: []
     });
     
     // 获取该日期的可用时间段
@@ -255,13 +263,58 @@ Page({
       return;
     }
     
-    const timeSlots = this.data.timeSlots.map((item, i) => {
-      return { ...item, isSelected: i === index };
-    });
+    let selectedTimeSlots = [...this.data.selectedTimeSlots];
+    let timeSlots = [...this.data.timeSlots];
+    
+    // 如果已经选中，则取消选中
+    if (timeSlots[index].isSelected) {
+      // 判断是否是连续时间段的边界
+      if (selectedTimeSlots.length > 1) {
+        // 只能从两端取消选择，不能从中间取消
+        const minIndex = Math.min(...selectedTimeSlots);
+        const maxIndex = Math.max(...selectedTimeSlots);
+        
+        if (index !== minIndex && index !== maxIndex) {
+          Message.info({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: '请从两端取消选择时间段'
+          });
+          return;
+        }
+      }
+      
+      // 取消选中
+      timeSlots[index].isSelected = false;
+      selectedTimeSlots = selectedTimeSlots.filter(i => i !== index);
+    } else {
+      // 选中新时间段
+      // 检查是否是连续的
+      if (selectedTimeSlots.length > 0) {
+        const minIndex = Math.min(...selectedTimeSlots);
+        const maxIndex = Math.max(...selectedTimeSlots);
+        
+        // 只能选择相邻的时间段
+        if (index !== minIndex - 1 && index !== maxIndex + 1) {
+          Message.info({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: '请选择连续的时间段进行预约'
+          });
+          return;
+        }
+      }
+      
+      // 选中
+      timeSlots[index].isSelected = true;
+      selectedTimeSlots.push(index);
+    }
     
     this.setData({
       timeSlots,
-      selectedTimeSlot: index
+      selectedTimeSlots
     });
   },
   
@@ -280,7 +333,7 @@ Page({
       month,
       selectedDate: null,
       selectedDateFormatted: '',
-      selectedTimeSlot: null
+      selectedTimeSlots: []
     });
     
     this.generateCalendar();
@@ -301,7 +354,7 @@ Page({
       month,
       selectedDate: null,
       selectedDateFormatted: '',
-      selectedTimeSlot: null
+      selectedTimeSlots: []
     });
     
     this.generateCalendar();
@@ -332,7 +385,7 @@ Page({
       return;
     }
     
-    const { selectedDate, selectedTimeSlot, phoneNumber } = this.data;
+    const { selectedDate, selectedTimeSlots, phoneNumber } = this.data;
     
     // 验证表单
     if (!selectedDate) {
@@ -345,7 +398,7 @@ Page({
       return;
     }
     
-    if (selectedTimeSlot === null) {
+    if (selectedTimeSlots.length === 0) {
       Message.error({
         context: this,
         offset: [20, 32],
@@ -372,12 +425,15 @@ Page({
     const { year, month, day } = selectedDate;
     const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     
+    // 获取选中的时间段
+    const selectedTimes = selectedTimeSlots.map(index => this.data.timeSlots[index].time);
+    
     // 调用云函数创建预约
     wx.cloud.callFunction({
       name: 'createAppointment',
       data: {
         date: formattedDate,
-        time: this.data.timeSlots[selectedTimeSlot].time,
+        times: selectedTimes,
         phone: phoneNumber
       },
       success: (res: any) => {
@@ -435,7 +491,7 @@ Page({
       selectedDate: null,
       selectedDateFormatted: '',
       timeSlots,
-      selectedTimeSlot: null,
+      selectedTimeSlots: [],
       phoneNumber: ''
     });
   }

@@ -181,23 +181,23 @@
 
 .time-slot-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20rpx;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 15rpx;
 }
 
 .time-slot {
   position: relative;
-  padding: 20rpx;
+  padding: 12rpx 8rpx;
   text-align: center;
   border-radius: 8rpx;
-  font-size: 28rpx;
+  font-size: 24rpx;
 }
 
 .time-status {
   position: absolute;
-  bottom: 8rpx;
-  right: 8rpx;
-  font-size: 22rpx;
+  bottom: 4rpx;
+  right: 4rpx;
+  font-size: 18rpx;
   color: #ff4d4f;
 }
 

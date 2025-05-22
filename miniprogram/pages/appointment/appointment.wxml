@@ -82,7 +82,7 @@
     </view>
     
     <!-- Phone Input -->
-    <view class="phone-input" wx:if="{{selectedTimeSlot !== null}}">
+    <view class="phone-input" wx:if="{{selectedTimeSlots.length > 0}}">
       <view class="section-title">联系电话</view>
       <input 
         type="number" 
@@ -94,7 +94,7 @@
     </view>
     
     <!-- Submit Button -->
-    <view class="submit-button" wx:if="{{selectedTimeSlot !== null}}">
+    <view class="submit-button" wx:if="{{selectedTimeSlots.length > 0}}">
       <t-button theme="primary" size="large" block bindtap="submitAppointment">提交预约</t-button>
     </view>
   </view>

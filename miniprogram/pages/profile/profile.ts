@@ -6,10 +6,12 @@ const app = getApp<IAppOption>();
 interface Appointment {
   _id: string;
   date: string;
-  time: string;
+  time?: string; // 旧的单一时间字段
+  times?: string[]; // 新的时间段数组
   phone: string;
   dateFormatted?: string;
   phoneFormatted?: string;
+  timeFormatted?: string; // 格式化后的时间显示
 }
 
 interface EventData {
@@ -94,10 +96,33 @@ Page({
           const phone = item.phone;
           const phoneFormatted = phone.substring(0, 3) + '****' + phone.substring(7);
           
+          // 格式化时间段显示
+          let timeFormatted = '';
+          if (item.times && item.times.length > 0) {
+            // 新版：处理多时间段数组
+            // 如果是连续的时间段，只显示开始和结束时间
+            const firstTime = item.times[0];
+            const lastTime = item.times[item.times.length - 1];
+            
+            if (item.times.length === 1) {
+              // 只有一个时间段
+              timeFormatted = firstTime;
+            } else {
+              // 多个时间段，显示第一个时间段的开始时间到最后一个时间段的结束时间
+              const startTime = firstTime.split('-')[0];
+              const endTime = lastTime.split('-')[1];
+              timeFormatted = `${startTime}-${endTime}`;
+            }
+          } else if (item.time) {
+            // 兼容旧版：单一时间段
+            timeFormatted = item.time;
+          }
+          
           return {
             ...item,
             dateFormatted,
-            phoneFormatted
+            phoneFormatted,
+            timeFormatted
           };
         });
         

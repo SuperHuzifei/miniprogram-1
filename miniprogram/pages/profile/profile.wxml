@@ -29,7 +29,7 @@
         <view class="appointment-card">
           <view class="appointment-info">
             <view class="appointment-date font-bold">{{item.dateFormatted}}</view>
-            <view class="appointment-time mt-2">{{item.time}}</view>
+            <view class="appointment-time mt-2">时间：{{item.timeFormatted || '暂无时间信息'}}</view>
             <view class="appointment-phone mt-2">手机号：{{item.phoneFormatted}}</view>
           </view>
           <view class="appointment-action">
