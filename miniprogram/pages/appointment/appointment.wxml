@@ -91,6 +91,8 @@
         maxlength="11"
         bindinput="onPhoneInput"
         value="{{phoneNumber}}"
+        cursor-spacing="80"
+        adjust-position="{{true}}"
       />
     </view>
     

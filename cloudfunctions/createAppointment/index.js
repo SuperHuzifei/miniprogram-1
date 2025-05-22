@@ -21,6 +21,7 @@ exports.main = async (event, context) => {
     // 检查所有时间段是否已被预约
     const existingAppointments = await db.collection('appointments').where({
       date,
+      isCanceled: false, // 只考虑未取消的预约
       isDeleted: false
     }).get()
     

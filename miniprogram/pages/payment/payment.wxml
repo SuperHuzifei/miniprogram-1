@@ -7,8 +7,12 @@
   <view class="qrcode-section">
     <view class="qrcode-title">请扫码支付</view>
     <view class="qrcode-wrapper">
-      <image class="qrcode-image" src="{{qrCodeUrl}}" mode="aspectFit"></image>
+      <image class="qrcode-image" src="{{qrCodeUrl}}" mode="aspectFit" show-menu-by-longpress="{{true}}" bindtap="previewQRCode"></image>
+      <view class="zoom-icon">
+        <t-icon name="zoom-in" size="48rpx" color="#0052d9" />
+      </view>
     </view>
+    <view class="qrcode-tip">点击图片放大后长按识别支付</view>
     <view class="qrcode-tip">支付完成后请点击下方按钮</view>
   </view>
   

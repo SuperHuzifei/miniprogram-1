@@ -39,5 +39,6 @@
   },
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents",
-  "usingComponents": {}
+  "usingComponents": {},
+  "allowRecognize": true
 }

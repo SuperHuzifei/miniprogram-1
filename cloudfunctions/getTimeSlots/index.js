@@ -23,12 +23,15 @@ exports.main = async (event, context) => {
       { time: '19:00-20:00', isAvailable: true },
       { time: '20:00-21:00', isAvailable: true },
       { time: '21:00-22:00', isAvailable: true },
+      { time: '22:00-23:00', isAvailable: true },
+      { time: '23:00-23:59', isAvailable: true },
     ]
     
     // 查询指定日期已有的预约
     const bookedAppointments = await db.collection('appointments').where({
       date: date,
-      isDeleted: false // 只考虑未取消的预约
+      isCanceled: false, // 只考虑未取消的预约
+      isDeleted: false // 只考虑未删除的预约
     }).get()
     
     // 标记已预约的时间段为不可用

@@ -155,5 +155,18 @@ Page({
         }
       }
     });
+  },
+  
+  // 预览二维码图片
+  previewQRCode() {
+    wx.previewImage({
+      urls: [this.data.qrCodeUrl]
+    }).catch(() => {
+      wx.showToast({
+        title: '长按图片可保存并识别',
+        icon: 'none',
+        duration: 2000
+      });
+    });
   }
 }); 
