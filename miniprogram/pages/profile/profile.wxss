@@ -156,4 +156,34 @@
 
 .font-bold {
   font-weight: bold;
+}
+
+.appointment-status {
+  font-size: 26rpx;
+}
+
+/* 预约状态样式 */
+.status-waiting {
+  color: #ff9800;
+}
+
+.status-success {
+  color: #4caf50;
+}
+
+.status-canceled {
+  color: #9e9e9e;
+}
+
+.status-refunding {
+  color: #2196f3;
+}
+
+.status-refunded {
+  color: #673ab7;
+}
+
+.appointment-amount {
+  font-size: 26rpx;
+  color: #f44336;
 } 

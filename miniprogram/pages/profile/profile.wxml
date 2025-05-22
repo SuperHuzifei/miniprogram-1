@@ -31,9 +31,19 @@
             <view class="appointment-date font-bold">{{item.dateFormatted}}</view>
             <view class="appointment-time mt-2">时间：{{item.timeFormatted || '暂无时间信息'}}</view>
             <view class="appointment-phone mt-2">手机号：{{item.phoneFormatted}}</view>
+            <view class="appointment-status mt-2 {{item.statusClass}}">状态：{{item.status}}</view>
+            <view class="appointment-amount mt-2" wx:if="{{item.amount}}">金额：¥{{item.amount}}</view>
           </view>
           <view class="appointment-action">
-            <t-button theme="danger" size="small" variant="outline" bindtap="cancelAppointment" data-id="{{item._id}}">取消预约</t-button>
+            <!-- 不同状态显示不同按钮 -->
+            <block wx:if="{{!item.isPaid && !item.isCanceled}}">
+              <!-- 待支付状态 -->
+              <t-button theme="primary" size="small" bindtap="goPay" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">支付页面</t-button>
+            </block>
+            <block wx:elif="{{!item.isCanceled}}">
+              <!-- 已支付但未取消状态 -->
+              <t-button theme="danger" size="small" variant="outline" bindtap="cancelAppointment" data-id="{{item._id}}">取消预约</t-button>
+            </block>
           </view>
         </view>
       </t-cell-group>
@@ -58,7 +68,7 @@
 <!-- Confirm Dialog -->
 <t-dialog visible="{{showConfirmDialog}}" title="确认取消" confirm-btn="确定" cancel-btn="取消" bind:confirm="confirmCancel" bind:cancel="closeDialog">
   <view slot="content">
-    确定要取消该预约吗？
+    确认取消预约？我们将在 1 个工作日内完成退款审核，并为您原路退回款项。
   </view>
 </t-dialog>
 

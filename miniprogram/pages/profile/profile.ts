@@ -12,6 +12,10 @@ interface Appointment {
   dateFormatted?: string;
   phoneFormatted?: string;
   timeFormatted?: string; // 格式化后的时间显示
+  status?: string;
+  isCanceled?: boolean;
+  isRefunded?: boolean;
+  isPaid?: boolean;
 }
 
 interface EventData {
@@ -118,11 +122,48 @@ Page({
             timeFormatted = item.time;
           }
           
+          // 根据预约状态设置样式类
+          let statusClass = '';
+          if (item.status) {
+            if (item.status.includes('待支付') || item.status.includes('待审核')) {
+              statusClass = 'status-waiting';
+            } else if (item.status.includes('成功')) {
+              statusClass = 'status-success';
+            } else if (item.status.includes('已取消') && !item.status.includes('退款')) {
+              statusClass = 'status-canceled';
+            } else if (item.status.includes('退款中')) {
+              statusClass = 'status-refunding';
+            } else if (item.status.includes('已退款')) {
+              statusClass = 'status-refunded';
+            }
+          } else {
+            // 兼容旧数据，根据字段生成状态
+            if (item.isCanceled) {
+              if (item.isRefunded) {
+                item.status = '已退款';
+                statusClass = 'status-refunded';
+              } else if (item.isPaid) {
+                item.status = '退款中';
+                statusClass = 'status-refunding';
+              } else {
+                item.status = '已取消';
+                statusClass = 'status-canceled';
+              }
+            } else if (item.isPaid) {
+              item.status = '已支付，预约成功';
+              statusClass = 'status-success';
+            } else {
+              item.status = '待支付';
+              statusClass = 'status-waiting';
+            }
+          }
+          
           return {
             ...item,
             dateFormatted,
             phoneFormatted,
-            timeFormatted
+            timeFormatted,
+            statusClass
           };
         });
         
@@ -159,24 +200,35 @@ Page({
   confirmCancel() {
     const id = this.data.currentAppointmentId;
     
-    wx.showLoading({ title: '取消中...' });
+    wx.showLoading({ title: '处理中...' });
     
     // 调用云函数取消预约
     wx.cloud.callFunction({
       name: 'cancelAppointment',
       data: { id },
-      success: () => {
+      success: (res: any) => {
         wx.hideLoading();
         
-        Message.success({
-          context: this,
-          offset: [20, 32],
-          duration: 2000,
-          content: '取消预约成功'
-        });
+        const { success, message } = res.result;
         
-        // 重新获取预约列表
-        this.fetchAppointments();
+        if (success) {
+          Message.success({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: message || '取消预约成功'
+          });
+          
+          // 重新获取预约列表
+          this.fetchAppointments();
+        } else {
+          Message.error({
+            context: this,
+            offset: [20, 32],
+            duration: 3000,
+            content: message || '取消预约失败'
+          });
+        }
       },
       fail: (err) => {
         wx.hideLoading();
@@ -203,6 +255,15 @@ Page({
   goToAppointment() {
     wx.switchTab({
       url: '/pages/appointment/appointment'
+    });
+  },
+  
+  // 去支付
+  goPay(e) {
+    const { id, amount, hours } = e.currentTarget.dataset;
+    
+    wx.navigateTo({
+      url: `/pages/payment/payment?appointmentId=${id}&amount=${amount}&hours=${hours || 1}`
     });
   }
 }); 

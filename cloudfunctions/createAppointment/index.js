@@ -45,6 +45,9 @@ exports.main = async (event, context) => {
       }
     }
     
+    // 计算预约时长（小时数）
+    const hours = times.length
+    
     // 创建预约记录
     const result = await db.collection('appointments').add({
       data: {
@@ -53,14 +56,25 @@ exports.main = async (event, context) => {
         times,
         phone,
         createTime: db.serverDate(),
-        isDeleted: false
+        isDeleted: false,
+        // 支付相关字段
+        isPaid: false,
+        isCanceled: false,
+        isRefunded: false,
+        hours,
+        amount: hours * 20, // 每小时20元，可以在管理后台调整单价
+        status: '待支付'
       }
     })
     
     return {
       success: true,
-      message: '预约成功',
-      data: result
+      message: '预约成功，请完成支付',
+      data: {
+        appointmentId: result._id,
+        amount: hours * 20,
+        hours
+      }
     }
   } catch (err) {
     console.error('创建预约失败', err)

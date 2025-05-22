@@ -483,18 +483,13 @@ Page({
       success: (res: any) => {
         wx.hideLoading();
         
-        const { success, message } = res.result;
+        const { success, message, data } = res.result;
         
         if (success) {
-          Message.success({
-            context: this,
-            offset: [20, 32],
-            duration: 2000,
-            content: '预约成功'
+          // 创建预约成功后，跳转到支付页面
+          wx.navigateTo({
+            url: `/pages/payment/payment?appointmentId=${data.appointmentId}&amount=${data.amount}&hours=${data.hours}`
           });
-          
-          // 重置表单
-          this.resetForm();
         } else {
           Message.error({
             context: this,

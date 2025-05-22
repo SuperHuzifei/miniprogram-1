@@ -1,0 +1,29 @@
+<view class="container">
+  <view class="payment-header">
+    <view class="header-title">预约支付</view>
+    <view class="amount">¥ {{amount}}</view>
+  </view>
+  
+  <view class="qrcode-section">
+    <view class="qrcode-title">请扫码支付</view>
+    <view class="qrcode-wrapper">
+      <image class="qrcode-image" src="{{qrCodeUrl}}" mode="aspectFit"></image>
+    </view>
+    <view class="qrcode-tip">支付完成后请点击下方按钮</view>
+  </view>
+  
+  <view class="action-buttons">
+    <t-button theme="primary" size="large" block bindtap="confirmPayment">我已完成支付</t-button>
+    <t-button theme="default" size="large" block bindtap="cancelPayment" class="mt-4">取消预约</t-button>
+  </view>
+  
+  <view class="payment-notice">
+    <view class="notice-title">温馨提示</view>
+    <view class="notice-item">1. 支付完成后请点击"我已完成支付"按钮</view>
+    <view class="notice-item">2. 管理员确认支付后，预约将自动生效</view>
+    <view class="notice-item">3. 如有问题，请联系客服</view>
+  </view>
+</view>
+
+<!-- Message -->
+<t-message id="t-message" /> 

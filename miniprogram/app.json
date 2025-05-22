@@ -3,7 +3,8 @@
     "pages/home/home",
     "pages/login/login",
     "pages/appointment/appointment",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/payment/payment"
   ],
   "window": {
     "navigationBarTextStyle": "black",
