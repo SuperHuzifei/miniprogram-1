@@ -18,7 +18,7 @@
   </view>
   
   <view class="action-buttons">
-    <t-button theme="primary" size="large" block bindtap="confirmReservation">确认已联系客服</t-button>
+    <t-button theme="primary" size="large" block bindtap="closeReservation">暂时关闭</t-button>
     <t-button theme="default" size="large" block bindtap="cancelReservation" class="mt-4">取消预约</t-button>
   </view>
   

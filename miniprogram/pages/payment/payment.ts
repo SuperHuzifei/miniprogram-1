@@ -59,56 +59,9 @@ Page({
     });
   },
   
-  // 确认已联系客服
-  confirmReservation() {
-    wx.showLoading({ title: '提交中...' });
-    
-    // 调用云函数修改预约状态为"待审核"
-    wx.cloud.callFunction({
-      name: 'confirmReservation',
-      data: {
-        appointmentId: this.data.appointmentId
-      },
-      success: (res: any) => {
-        wx.hideLoading();
-        
-        const { success, message } = res.result;
-        
-        if (success) {
-          Message.success({
-            context: this,
-            offset: [20, 32],
-            duration: 2000,
-            content: '已提交预约确认，待客服审核'
-          });
-          
-          // 延迟返回
-          setTimeout(() => {
-            wx.redirectTo({
-              url: '/pages/profile/profile'
-            });
-          }, 2000);
-        } else {
-          Message.error({
-            context: this,
-            offset: [20, 32],
-            duration: 3000,
-            content: message || '操作失败，请重试'
-          });
-        }
-      },
-      fail: (err) => {
-        wx.hideLoading();
-        console.error('确认预约失败', err);
-        
-        Message.error({
-          context: this,
-          offset: [20, 32],
-          duration: 3000,
-          content: '操作失败，请重试'
-        });
-      }
-    });
+  // 暂时关闭页面
+  closeReservation() {
+    wx.navigateBack();
   },
   
   // 取消预约

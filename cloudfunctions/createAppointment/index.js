@@ -44,7 +44,7 @@ exports.main = async (event, context) => {
     // 计算预约时长（小时数）
     const hours = times.length
     
-    // 创建预约记录 - 精简数据结构
+    // 创建预约记录 - 直接设置状态为待审核
     const result = await db.collection('appointments').add({
       data: {
         openid: wxContext.OPENID,
@@ -53,7 +53,7 @@ exports.main = async (event, context) => {
         phone,
         createTime: db.serverDate(),
         hours,
-        status: '待提交'
+        status: '待审核'
       }
     })
     

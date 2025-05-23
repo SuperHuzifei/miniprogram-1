@@ -1,4 +1,5 @@
 // pages/profile/profile.ts
+import { IAppOption } from '../../app';
 import Message from 'tdesign-miniprogram/message/index';
 
 const app = getApp<IAppOption>();
@@ -21,6 +22,8 @@ interface EventData {
   currentTarget: {
     dataset: {
       id: string;
+      amount?: number;
+      hours?: number;
     }
   }
 }
@@ -121,9 +124,7 @@ Page({
           // 根据预约状态设置样式类
           let statusClass = '';
           if (item.status) {
-            if (item.status.includes('待提交')) {
-              statusClass = 'status-waiting';
-            } else if (item.status.includes('待审核')) {
+            if (item.status.includes('待审核')) {
               statusClass = 'status-reviewing';
             } else if (item.status.includes('已确认')) {
               statusClass = 'status-success';
