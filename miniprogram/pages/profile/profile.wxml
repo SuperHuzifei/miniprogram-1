@@ -38,7 +38,7 @@
             <!-- 不同状态显示不同按钮 -->
             <block wx:if="{{item.status === '待审核'}}">
               <!-- 待审核状态 -->
-              <t-button theme="primary" size="small" bindtap="goPay" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">联系客服</t-button>
+              <t-button theme="primary" size="small" bindtap="goReservation" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">联系客服</t-button>
             </block>
             <block wx:elif="{{item.status !== '已取消'}}">
               <!-- 其他未取消状态 -->

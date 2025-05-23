@@ -486,9 +486,9 @@ Page({
         const { success, message, data } = res.result;
         
         if (success) {
-          // 创建预约成功后，跳转到支付页面
+          // 创建预约成功后，跳转到预约页面
           wx.navigateTo({
-            url: `/pages/payment/payment?appointmentId=${data.appointmentId}&amount=${data.amount}&hours=${data.hours}`
+            url: `/pages/reservation/reservation?appointmentId=${data.appointmentId}&amount=${data.amount}&hours=${data.hours}`
           });
         } else {
           Message.error({

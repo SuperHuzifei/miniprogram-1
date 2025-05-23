@@ -4,7 +4,8 @@
     "pages/login/login",
     "pages/appointment/appointment",
     "pages/profile/profile",
-    "pages/payment/payment"
+    "pages/payment/payment",
+    "pages/reservation/reservation"
   ],
   "window": {
     "navigationBarTextStyle": "black",

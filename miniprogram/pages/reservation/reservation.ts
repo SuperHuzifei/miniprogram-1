@@ -32,11 +32,6 @@ Page({
       amount: Number(amount) || 0,
       hours: Number(hours) || 1
     });
-    
-    // 重定向到新的预约页面
-    wx.redirectTo({
-      url: `/pages/reservation/reservation?appointmentId=${appointmentId}&amount=${amount}&hours=${hours}`
-    });
   },
   
   // 复制客服微信号
