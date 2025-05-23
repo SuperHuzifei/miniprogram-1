@@ -31,6 +31,11 @@ exports.main = async (event, context) => {
         processedItem.status = '待提交';
       }
       
+      // 确保doorPassword字段存在（如果状态是已确认）
+      if (processedItem.status === '已确认' && !processedItem.doorPassword) {
+        processedItem.doorPassword = '请联系客服获取';
+      }
+      
       return processedItem;
     });
     

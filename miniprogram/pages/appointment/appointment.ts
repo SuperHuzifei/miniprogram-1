@@ -7,6 +7,7 @@ Page({
   data: {
     isLogin: false,
     userInfo: null,
+    today: new Date(),
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1, // 月份从1开始
     calendarDays: [],

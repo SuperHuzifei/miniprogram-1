@@ -28,6 +28,49 @@ interface EventData {
   }
 }
 
+// 工具函数：格式化日期
+function formatDate(dateString: string): string {
+  const [year, month, day] = dateString.split('-');
+  return `${year}年${month}月${day}日`;
+}
+
+// 工具函数：格式化手机号
+function formatPhone(phone: string): string {
+  return phone.substring(0, 3) + '****' + phone.substring(7);
+}
+
+// 工具函数：格式化时间段
+function formatTimeSlots(times: string[]): string {
+  if (!times || times.length === 0) return '';
+  
+  const firstTime = times[0];
+  const lastTime = times[times.length - 1];
+  
+  if (times.length === 1) {
+    // 只有一个时间段
+    return firstTime;
+  } else {
+    // 多个时间段，显示第一个时间段的开始时间到最后一个时间段的结束时间
+    const startTime = firstTime.split('-')[0];
+    const endTime = lastTime.split('-')[1];
+    return `${startTime}-${endTime}`;
+  }
+}
+
+// 工具函数：获取状态样式类
+function getStatusClass(status: string): string {
+  if (!status) return '';
+  
+  if (status.includes('待审核')) {
+    return 'status-reviewing';
+  } else if (status.includes('已确认')) {
+    return 'status-success';
+  } else if (status.includes('已取消')) {
+    return 'status-canceled';
+  }
+  return '';
+}
+
 Page({
   data: {
     isLogin: false,
@@ -35,7 +78,7 @@ Page({
     appointments: [] as Appointment[],
     loading: true,
     showConfirmDialog: false,
-    currentAppointmentId: '',
+    currentAppointmentId: ''
   },
   
   onLoad() {
@@ -95,43 +138,11 @@ Page({
         
         // 格式化数据
         const formattedAppointments = data.map(item => {
-          const [year, month, day] = item.date.split('-');
-          const dateFormatted = `${year}年${month}月${day}日`;
-          
-          // 格式化手机号，中间部分用 * 替代
-          const phone = item.phone;
-          const phoneFormatted = phone.substring(0, 3) + '****' + phone.substring(7);
-          
-          // 格式化时间段显示
-          let timeFormatted = '';
-          if (item.times && item.times.length > 0) {
-            // 处理多时间段数组
-            // 如果是连续的时间段，只显示开始和结束时间
-            const firstTime = item.times[0];
-            const lastTime = item.times[item.times.length - 1];
-            
-            if (item.times.length === 1) {
-              // 只有一个时间段
-              timeFormatted = firstTime;
-            } else {
-              // 多个时间段，显示第一个时间段的开始时间到最后一个时间段的结束时间
-              const startTime = firstTime.split('-')[0];
-              const endTime = lastTime.split('-')[1];
-              timeFormatted = `${startTime}-${endTime}`;
-            }
-          }
-          
-          // 根据预约状态设置样式类
-          let statusClass = '';
-          if (item.status) {
-            if (item.status.includes('待审核')) {
-              statusClass = 'status-reviewing';
-            } else if (item.status.includes('已确认')) {
-              statusClass = 'status-success';
-            } else if (item.status.includes('已取消')) {
-              statusClass = 'status-canceled';
-            }
-          }
+          // 使用工具函数格式化数据
+          const dateFormatted = formatDate(item.date);
+          const phoneFormatted = formatPhone(item.phone);
+          const timeFormatted = formatTimeSlots(item.times);
+          const statusClass = getStatusClass(item.status);
           
           // 如果没有金额，根据小时数计算
           if (!item.amount && item.hours) {
@@ -245,5 +256,136 @@ Page({
     wx.navigateTo({
       url: `/pages/reservation/reservation?appointmentId=${id}&amount=${amount}&hours=${hours || 1}`
     });
-  }
+  },
+  
+  // 跳转到管理员页面
+  goToAdmin() {
+    // 如果未登录，提示先登录
+    if (!this.data.isLogin) {
+      Message.info({
+        context: this,
+        offset: [20, 32],
+        duration: 2000,
+        content: '请先登录'
+      });
+      return;
+    }
+    
+    // 跳转到管理员页面
+    wx.navigateTo({
+      url: '/pages/admin/admin',
+      fail: (err) => {
+        console.error('跳转到管理员页面失败', err);
+        Message.error({
+          context: this,
+          offset: [20, 32],
+          duration: 2000,
+          content: '页面跳转失败'
+        });
+      }
+    });
+  },
+  
+  // 复制密码
+  copyPassword(e: any) {
+    const password = e.currentTarget.dataset.password;
+    
+    wx.setClipboardData({
+      data: password,
+      success: () => {
+        Message.success({
+          context: this,
+          offset: [20, 32],
+          duration: 2000,
+          content: '密码已复制'
+        });
+      }
+    });
+  },
+  
+  // 显示编辑用户名对话框
+  showEditNameDialog() {
+    // 设置初始值为当前用户名
+    const currentNickname = this.data.userInfo?.nickname || '';
+    
+    // 使用微信原生对话框，包含输入框
+    wx.showModal({
+      title: '修改用户名',
+      editable: true,
+      placeholderText: '请输入新的用户名',
+      content: currentNickname,
+      success: (res) => {
+        if (res.confirm) {
+          const newNickname = res.content.trim();
+          if (!newNickname) {
+            Message.error({
+              context: this,
+              offset: [20, 32],
+              duration: 2000,
+              content: '用户名不能为空'
+            });
+            return;
+          }
+          
+          // 如果用户名没有变化，直接返回
+          if (newNickname === currentNickname) {
+            return;
+          }
+          
+          this.updateUserName(newNickname);
+        }
+      }
+    });
+  },
+  
+  // 更新用户名
+  updateUserName(newNickname) {
+    wx.showLoading({ title: '更新中...' });
+    
+    // 调用云函数更新用户名
+    wx.cloud.callFunction({
+      name: 'updateUserName',
+      data: { nickname: newNickname },
+      success: (res: any) => {
+        wx.hideLoading();
+        
+        const { success, message, userInfo } = res.result;
+        
+        if (success) {
+          // 更新全局用户信息
+          app.globalData.userInfo = userInfo;
+          
+          // 更新本地用户信息
+          this.setData({
+            userInfo: userInfo
+          });
+          
+          Message.success({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: '用户名修改成功'
+          });
+        } else {
+          Message.error({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: message || '用户名修改失败'
+          });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('更新用户名失败', err);
+        
+        Message.error({
+          context: this,
+          offset: [20, 32],
+          duration: 2000,
+          content: '更新用户名失败'
+        });
+      }
+    });
+  },
 }); 

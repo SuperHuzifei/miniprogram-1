@@ -7,7 +7,7 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const { date, times, phone } = event
+  const { date, times, phone, roomName = '标准会议室' } = event
   
   try {
     // 检查时间段是否连续
@@ -41,6 +41,20 @@ exports.main = async (event, context) => {
       }
     }
     
+    // 获取用户信息
+    let userName = '未知用户'
+    try {
+      const userInfo = await db.collection('users').where({
+        openid: wxContext.OPENID
+      }).get()
+      
+      if (userInfo.data.length > 0) {
+        userName = userInfo.data[0].nickname || '未知用户'
+      }
+    } catch (error) {
+      console.error('获取用户信息失败', error)
+    }
+    
     // 计算预约时长（小时数）
     const hours = times.length
     
@@ -48,9 +62,11 @@ exports.main = async (event, context) => {
     const result = await db.collection('appointments').add({
       data: {
         openid: wxContext.OPENID,
+        userName, // 添加用户名称
         date,
         times,
         phone,
+        roomName,
         createTime: db.serverDate(),
         hours,
         status: '待审核'

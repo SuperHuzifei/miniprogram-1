@@ -1,0 +1,233 @@
+<!-- 管理员页面 -->
+<view class="admin-container">
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <t-loading theme="circular" size="80rpx" />
+    <view class="loading-text">加载中...</view>
+  </view>
+  
+  <!-- 管理员登录界面 -->
+  <view class="login-container" wx:elif="{{!isAdmin && !loading}}">
+    <view class="login-card">
+      <view class="login-title">管理员登录</view>
+      <view class="login-form">
+        <!-- 使用原生输入框替代t-input -->
+        <view class="password-input-container">
+          <text class="password-label">密码</text>
+          <input 
+            class="password-input"
+            type="password" 
+            placeholder="请输入管理员密码" 
+            value="{{adminPassword}}"
+            bindinput="onPasswordInput" 
+          />
+        </view>
+        <view class="login-btn">
+          <t-button theme="primary" block bind:tap="adminLogin">登录</t-button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 管理员界面 -->
+  <block wx:elif="{{isAdmin && !loading}}">
+    <!-- 标签页 -->
+    <t-tabs value="{{activeTab}}" bind:change="onTabChange" t-class="tabs">
+      <t-tab-panel label="用户管理" value="users" />
+      <t-tab-panel label="预约管理" value="appointments" />
+    </t-tabs>
+    
+    <!-- 用户管理 -->
+    <view class="tab-content" wx:if="{{activeTab === 'users'}}">
+      <!-- 搜索栏 -->
+      <view class="search-bar">
+        <t-search 
+          placeholder="搜索用户" 
+          value="{{userSearchValue}}" 
+          bind:change="onUserSearchChange"
+          bind:submit="onUserSearch"
+        />
+      </view>
+      
+      <!-- 用户列表 -->
+      <view class="user-list">
+        <t-cell-group>
+          <block wx:for="{{users}}" wx:key="_id">
+            <t-cell 
+              title="{{item.nickname || '未设置昵称'}}" 
+              description="{{item.openid}}"
+              arrow
+              bind:tap="viewUserDetail"
+              data-user="{{item}}"
+              image="{{item.avatarUrl || '/assets/icons/default-avatar.png'}}"
+            />
+          </block>
+        </t-cell-group>
+        
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{hasMoreUsers}}">
+          <t-button size="small" variant="outline" bind:tap="loadMoreUsers">加载更多</t-button>
+        </view>
+        
+        <!-- 无数据 -->
+        <view class="no-data" wx:if="{{users.length === 0}}">
+          <view class="no-data-text">暂无用户数据</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 预约管理 -->
+    <view class="tab-content" wx:if="{{activeTab === 'appointments'}}">
+      <!-- 搜索和筛选 -->
+      <view class="filter-container">
+        <view class="search-bar">
+          <t-search 
+            placeholder="搜索预约" 
+            value="{{appointmentSearchValue}}" 
+            bind:change="onAppointmentSearchChange"
+            bind:submit="onAppointmentSearch"
+          />
+        </view>
+        
+        <view class="status-filter">
+          <t-dropdown-menu>
+            <t-dropdown-item
+              options="{{statusOptions}}"
+              value="{{statusFilter}}"
+              bind:change="onStatusFilterChange"
+            />
+          </t-dropdown-menu>
+        </view>
+      </view>
+      
+      <!-- 预约列表 -->
+      <view class="appointment-list">
+        <block wx:for="{{appointments}}" wx:key="_id">
+          <view class="appointment-card">
+            <view class="appointment-header">
+              <view class="appointment-title">{{item.roomName}}</view>
+              <view class="appointment-status {{item.statusClass}}">{{item.status}}</view>
+            </view>
+            
+            <view class="appointment-info">
+              <view class="info-item">
+                <text class="label">预约人：</text>
+                <text class="value">{{item.userName || '未知'}}</text>
+              </view>
+              <view class="info-item">
+                <text class="label">电话：</text>
+                <text class="value">{{item.phone || '未提供'}}</text>
+              </view>
+              <view class="info-item">
+                <text class="label">日期：</text>
+                <text class="value">{{item.date}}</text>
+              </view>
+              <view class="info-item">
+                <text class="label">时间段：</text>
+                <text class="value">{{item.timeFormatted}}</text>
+              </view>
+              <view class="info-item">
+                <text class="label">创建时间：</text>
+                <text class="value">{{item.createTime}}</text>
+              </view>
+              <view class="info-item" wx:if="{{item.status === '已确认'}}">
+                <text class="label">开门密码：</text>
+                <text class="value">{{item.doorPassword || '未设置'}}</text>
+                <t-button size="extra-small" theme="primary" variant="outline" bindtap="showPasswordDialog" data-id="{{item._id}}" data-password="{{item.doorPassword}}">修改</t-button>
+              </view>
+            </view>
+            
+            <!-- 操作按钮 -->
+            <view class="appointment-actions">
+              <t-button 
+                size="small" 
+                theme="primary" 
+                variant="outline" 
+                wx:if="{{item.status === '待审核'}}"
+                bind:tap="showApproveDialog"
+                data-id="{{item._id}}"
+              >通过</t-button>
+              
+              <t-button 
+                size="small" 
+                theme="primary" 
+                variant="outline" 
+                wx:if="{{item.status === '已确认'}}"
+                bind:tap="showPasswordDialog"
+                data-id="{{item._id}}"
+                data-password="{{item.doorPassword}}"
+              >改密码</t-button>
+              
+              <t-button 
+                size="small" 
+                theme="danger" 
+                variant="outline" 
+                wx:if="{{item.status !== '已取消'}}"
+                bind:tap="cancelAppointment"
+                data-id="{{item._id}}"
+              >取消</t-button>
+            </view>
+          </view>
+        </block>
+        
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{hasMoreAppointments}}">
+          <t-button size="small" variant="outline" bind:tap="loadMoreAppointments">加载更多</t-button>
+        </view>
+        
+        <!-- 无数据 -->
+        <view class="no-data" wx:if="{{appointments.length === 0}}">
+          <view class="no-data-text">暂无预约数据</view>
+        </view>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 消息提示 -->
+  <t-message id="t-message" />
+</view>
+
+<!-- 确认对话框 -->
+<t-dialog id="t-dialog" />
+
+<!-- 审核对话框 -->
+<t-dialog
+  visible="{{approveDialogVisible}}"
+  title="设置开门密码"
+  confirm-btn="确认"
+  cancel-btn="取消"
+  bind:confirm="confirmApprove"
+  bind:cancel="closeApproveDialog"
+>
+  <view slot="content" class="dialog-content">
+    <view class="dialog-text">请设置开门密码（可选）：</view>
+    <input 
+      class="dialog-input" 
+      type="text" 
+      placeholder="留空将自动生成6位数字密码" 
+      value="{{doorPassword}}"
+      bindinput="onDoorPasswordInput" 
+    />
+  </view>
+</t-dialog>
+
+<!-- 修改密码对话框 -->
+<t-dialog
+  visible="{{passwordDialogVisible}}"
+  title="修改开门密码"
+  confirm-btn="确认"
+  cancel-btn="取消"
+  bind:confirm="confirmUpdatePassword"
+  bind:cancel="closePasswordDialog"
+>
+  <view slot="content" class="dialog-content">
+    <view class="dialog-text">请输入新的开门密码：</view>
+    <input 
+      class="dialog-input" 
+      type="text" 
+      placeholder="输入新密码或留空自动生成" 
+      value="{{doorPassword}}"
+      bindinput="onDoorPasswordInput" 
+    />
+  </view>
+</t-dialog>

@@ -8,7 +8,7 @@ App<IAppOption>({
     // 初始化云环境
     if (wx.cloud) {
       wx.cloud.init({
-        env: 'cloud1-4gj9r17cf89aa844', // 云环境ID
+        env: cloud.DYNAMIC_CURRENT_ENV, // 使用动态环境ID
         traceUser: true,
       });
     } else {
@@ -75,6 +75,16 @@ App<IAppOption>({
         }
       }
     });
+  },
+  
+  // 更新用户信息
+  updateUserInfo(userInfo: any) {
+    this.globalData.userInfo = userInfo;
+    
+    // 触发更新事件，通知页面更新
+    if (this.userInfoReadyCallback) {
+      this.userInfoReadyCallback(userInfo);
+    }
   },
   
   onShow() {

@@ -9,12 +9,28 @@ exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const { userInfo } = event
   
-  // 确保统一使用 nickname 作为字段名
-  const nickname = userInfo.nickname || userInfo.nickName
-  const avatarUrl = userInfo.avatarUrl
-  const gender = userInfo.gender
-  
   try {
+    // 验证用户信息
+    if (!userInfo) {
+      return {
+        success: false,
+        message: '用户信息不能为空'
+      }
+    }
+    
+    // 验证 openid
+    if (!wxContext.OPENID) {
+      return {
+        success: false,
+        message: '用户未登录'
+      }
+    }
+  
+    // 确保统一使用 nickname 作为字段名
+    const nickname = userInfo.nickname || userInfo.nickName || '用户'
+    const avatarUrl = userInfo.avatarUrl || ''
+    const gender = userInfo.gender || 0
+    
     // 查询用户是否已存在
     const userRecord = await db.collection('users').where({
       openid: wxContext.OPENID
@@ -59,8 +75,8 @@ exports.main = async (event, context) => {
     console.error('用户登录失败', err)
     return {
       success: false,
-      message: '用户登录失败',
-      error: err
+      message: '用户登录失败，请稍后再试',
+      error: process.env.NODE_ENV === 'development' ? err : undefined
     }
   }
 } 

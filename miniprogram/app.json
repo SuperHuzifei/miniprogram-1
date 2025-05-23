@@ -5,7 +5,8 @@
     "pages/appointment/appointment",
     "pages/profile/profile",
     "pages/payment/payment",
-    "pages/reservation/reservation"
+    "pages/reservation/reservation",
+    "pages/admin/admin"
   ],
   "window": {
     "navigationBarTextStyle": "black",

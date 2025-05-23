@@ -26,10 +26,21 @@
   background-color: #f0f0f0;
 }
 
+.nickname-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16rpx;
+}
+
 .nickname {
-  margin-top: 20rpx;
   font-size: 36rpx;
+  color: #ffffff;
   font-weight: 500;
+}
+
+.edit-name-content {
+  padding: 30rpx 20rpx;
 }
 
 .not-login {
@@ -65,12 +76,32 @@
 .header {
   padding: 30rpx 0;
   background-color: #fff;
+  position: relative;
 }
 
 .header-title {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
+}
+
+/* 管理员入口按钮 */
+.admin-entry {
+  position: absolute;
+  right: 30rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border-radius: 50%;
+}
+
+.admin-entry:active {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Appointment List */
@@ -190,4 +221,35 @@
 .appointment-amount {
   font-size: 26rpx;
   color: #f44336;
+}
+
+/* 开门密码样式 */
+.appointment-password {
+  font-size: 26rpx;
+  color: #333;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.password-text {
+  font-weight: bold;
+  color: #0052d9;
+  margin: 0 10rpx;
+}
+
+/* 编辑按钮样式 */
+.edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 48rpx;
+  height: 48rpx;
+  margin-left: 16rpx;
+}
+
+.edit-icon {
+  color: #ffffff;
 } 
