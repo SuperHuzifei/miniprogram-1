@@ -17,17 +17,25 @@ exports.main = async (event, context) => {
       .orderBy('createTime', 'desc')
       .get()
     
-    // 确保所有记录都有amount字段，如果没有则默认设置为20
+    // 处理数据，确保前端显示所需的字段都存在
     const data = appointments.data.map(item => {
-      if (!item.amount) {
-        // 如果没有amount字段，根据时间段数量计算默认金额
-        let amount = 20; // 默认金额
-        if (item.times && Array.isArray(item.times)) {
-          amount = item.times.length * 20; // 每小时20元
-        }
-        return { ...item, amount };
+      const processedItem = { ...item };
+      
+      // 为前端计算金额（如果不存在）
+      if (!processedItem.amount && processedItem.hours) {
+        processedItem.amount = processedItem.hours * 20; // 每小时20元
       }
-      return item;
+      
+      // 确保status字段存在（不使用confirmTime判断）
+      if (!processedItem.status) {
+        if (processedItem.isCanceled) {
+          processedItem.status = '已取消';
+        } else {
+          processedItem.status = '待提交';
+        }
+      }
+      
+      return processedItem;
     });
     
     return {

@@ -28,37 +28,36 @@ exports.main = async (event, context) => {
     }
     
     // 检查预约状态
-    if (appointment.data.isPaid) {
-      return {
-        success: false,
-        message: '该预约已支付'
-      }
-    }
-    
-    if (appointment.data.isDeleted || appointment.data.isCanceled) {
+    if (appointment.data.isCanceled) {
       return {
         success: false,
         message: '该预约已取消'
       }
     }
     
+    if (appointment.data.status === '待审核' || appointment.data.status === '已确认') {
+      return {
+        success: false,
+        message: '该预约已提交确认'
+      }
+    }
+    
     // 更新预约状态为待审核
     await db.collection('appointments').doc(appointmentId).update({
       data: {
-        status: '待审核支付',
-        updateTime: db.serverDate()
+        status: '待审核'
       }
     })
     
     return {
       success: true,
-      message: '支付确认已提交，等待管理员审核'
+      message: '预约已提交，等待客服确认'
     }
   } catch (err) {
-    console.error('确认支付失败', err)
+    console.error('确认预约失败', err)
     return {
       success: false,
-      message: '操作失败，请重试',
+      message: '确认预约失败',
       error: err
     }
   }

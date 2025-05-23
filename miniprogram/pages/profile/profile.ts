@@ -6,16 +6,16 @@ const app = getApp<IAppOption>();
 interface Appointment {
   _id: string;
   date: string;
-  time?: string; // 旧的单一时间字段
-  times?: string[]; // 新的时间段数组
+  times: string[]; // 时间段数组
   phone: string;
   dateFormatted?: string;
   phoneFormatted?: string;
   timeFormatted?: string; // 格式化后的时间显示
-  status?: string;
-  isCanceled?: boolean;
-  isRefunded?: boolean;
-  isPaid?: boolean;
+  status: string;
+  isCanceled: boolean;
+  hours: number;
+  amount?: number;
+  statusClass?: string;
 }
 
 interface EventData {
@@ -103,7 +103,7 @@ Page({
           // 格式化时间段显示
           let timeFormatted = '';
           if (item.times && item.times.length > 0) {
-            // 新版：处理多时间段数组
+            // 处理多时间段数组
             // 如果是连续的时间段，只显示开始和结束时间
             const firstTime = item.times[0];
             const lastTime = item.times[item.times.length - 1];
@@ -117,45 +117,25 @@ Page({
               const endTime = lastTime.split('-')[1];
               timeFormatted = `${startTime}-${endTime}`;
             }
-          } else if (item.time) {
-            // 兼容旧版：单一时间段
-            timeFormatted = item.time;
           }
           
           // 根据预约状态设置样式类
           let statusClass = '';
           if (item.status) {
-            if (item.status.includes('待支付') || item.status.includes('待审核')) {
+            if (item.status.includes('待提交')) {
               statusClass = 'status-waiting';
-            } else if (item.status.includes('成功')) {
+            } else if (item.status.includes('待审核')) {
+              statusClass = 'status-reviewing';
+            } else if (item.status.includes('已确认')) {
               statusClass = 'status-success';
-            } else if (item.status.includes('已取消') && !item.status.includes('退款')) {
+            } else if (item.status.includes('已取消')) {
               statusClass = 'status-canceled';
-            } else if (item.status.includes('退款中')) {
-              statusClass = 'status-refunding';
-            } else if (item.status.includes('已退款')) {
-              statusClass = 'status-refunded';
             }
-          } else {
-            // 兼容旧数据，根据字段生成状态
-            if (item.isCanceled) {
-              if (item.isRefunded) {
-                item.status = '已退款';
-                statusClass = 'status-refunded';
-              } else if (item.isPaid) {
-                item.status = '退款中';
-                statusClass = 'status-refunding';
-              } else {
-                item.status = '已取消';
-                statusClass = 'status-canceled';
-              }
-            } else if (item.isPaid) {
-              item.status = '已支付，预约成功';
-              statusClass = 'status-success';
-            } else {
-              item.status = '待支付';
-              statusClass = 'status-waiting';
-            }
+          }
+          
+          // 如果没有金额，根据小时数计算
+          if (!item.amount && item.hours) {
+            item.amount = item.hours * 20; // 每小时20元
           }
           
           return {

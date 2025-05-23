@@ -30,29 +30,23 @@ exports.main = async (event, context) => {
     // 查询指定日期已有的预约
     const bookedAppointments = await db.collection('appointments').where({
       date: date,
-      isCanceled: false, // 只考虑未取消的预约
-      isDeleted: false // 只考虑未删除的预约
+      isCanceled: false // 只考虑未取消的预约
     }).get()
     
-    // 标记已预约的时间段为不可用
-    const bookedTimes = []
+    // 收集所有已预约的时间段
+    const bookedTimes = new Set()
     bookedAppointments.data.forEach(appointment => {
-      // 如果是数组，处理多个时间段
+      // 处理时间段
       if (Array.isArray(appointment.times)) {
-        bookedTimes.push(...appointment.times)
-      } 
-      // 兼容旧数据，如果是单个时间字段
-      else if (appointment.time) {
-        bookedTimes.push(appointment.time)
+        appointment.times.forEach(time => bookedTimes.add(time))
       }
     })
     
-    const timeSlots = allTimeSlots.map(slot => {
-      return {
-        ...slot,
-        isAvailable: !bookedTimes.includes(slot.time)
-      }
-    })
+    // 标记已预约的时间段为不可用
+    const timeSlots = allTimeSlots.map(slot => ({
+      ...slot,
+      isAvailable: !bookedTimes.has(slot.time)
+    }))
     
     return {
       success: true,

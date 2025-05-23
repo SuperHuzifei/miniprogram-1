@@ -167,6 +167,10 @@
   color: #ff9800;
 }
 
+.status-reviewing {
+  color: #03a9f4;
+}
+
 .status-success {
   color: #4caf50;
 }

@@ -1,31 +1,32 @@
 <view class="container">
   <view class="payment-header">
-    <view class="header-title">预约支付</view>
-    <view class="amount">¥ {{amount}}</view>
+    <view class="header-title">预约确认</view>
+    <view class="reservation-info">预约时长: {{hours}}小时</view>
+    <view class="amount">金额: ¥ {{amount}}</view>
   </view>
   
-  <view class="qrcode-section">
-    <view class="qrcode-title">请扫码支付</view>
-    <view class="qrcode-wrapper">
-      <image class="qrcode-image" src="{{qrCodeUrl}}" mode="aspectFit" show-menu-by-longpress="{{true}}" bindtap="previewQRCode"></image>
-      <view class="zoom-icon">
-        <t-icon name="zoom-in" size="48rpx" color="#0052d9" />
+  <view class="contact-section">
+    <view class="section-title">请联系客服完成预约</view>
+    <view class="contact-card">
+      <view class="wechat-id">
+        <text class="label">客服微信号:</text>
+        <text class="value">roomservice2024</text>
+        <button class="copy-btn" size="mini" bindtap="copyWechatId">复制</button>
       </view>
+      <view class="contact-tip">添加客服微信，发送您的预约信息完成确认</view>
     </view>
-    <view class="qrcode-tip">点击图片放大后长按识别支付</view>
-    <view class="qrcode-tip">支付完成后请点击下方按钮</view>
   </view>
   
   <view class="action-buttons">
-    <t-button theme="primary" size="large" block bindtap="confirmPayment">我已完成支付</t-button>
-    <t-button theme="default" size="large" block bindtap="cancelPayment" class="mt-4">取消预约</t-button>
+    <t-button theme="primary" size="large" block bindtap="confirmReservation">确认已联系客服</t-button>
+    <t-button theme="default" size="large" block bindtap="cancelReservation" class="mt-4">取消预约</t-button>
   </view>
   
   <view class="payment-notice">
     <view class="notice-title">温馨提示</view>
-    <view class="notice-item">1. 支付完成后请点击"我已完成支付"按钮</view>
-    <view class="notice-item">2. 管理员确认支付后，预约将自动生效</view>
-    <view class="notice-item">3. 如有问题，请联系客服</view>
+    <view class="notice-item">1. 添加客服微信并提供预约信息</view>
+    <view class="notice-item">2. 客服确认后，预约将自动生效</view>
+    <view class="notice-item">3. 预约成功后可在"我的预约"中查看</view>
   </view>
 </view>
 

@@ -12,6 +12,7 @@ exports.main = async (event, context) => {
   try {
     // 查找预约记录
     const appointment = await db.collection('appointments').doc(id).get()
+    
     if (!appointment.data) {
       return {
         success: false,
@@ -19,54 +20,33 @@ exports.main = async (event, context) => {
       }
     }
     
-    // 检查是否是本人的预约
+    // 验证是否是该用户的预约
     if (appointment.data.openid !== wxContext.OPENID) {
       return {
         success: false,
-        message: '无权取消此预约'
+        message: '无权操作此预约'
       }
     }
     
-    // 检查预约是否已取消
+    // 如果已经取消，返回错误
     if (appointment.data.isCanceled) {
       return {
         success: false,
-        message: '该预约已取消'
+        message: '该预约已经取消'
       }
     }
     
-    // 更新预约记录
-    const updateData = {
-      isCanceled: true,
-      cancelTime: db.serverDate()
-    }
+    // 更新预约状态为已取消
+    await db.collection('appointments').doc(id).update({
+      data: {
+        isCanceled: true,
+        status: '已取消'
+      }
+    })
     
-    // 如果已支付，则标记为退款中
-    if (appointment.data.isPaid) {
-      updateData.isRefunded = false
-      updateData.status = '退款中'
-      
-      // 保留预约记录，只更新状态
-      await db.collection('appointments').doc(id).update({
-        data: updateData
-      })
-      
-      return {
-        success: true,
-        message: '预约已取消，退款将在1个工作日内处理'
-      }
-    } else {
-      // 未支付，直接取消 - 保留记录，不标记为删除
-      updateData.status = '已取消'
-      
-      await db.collection('appointments').doc(id).update({
-        data: updateData
-      })
-      
-      return {
-        success: true,
-        message: '预约已取消'
-      }
+    return {
+      success: true,
+      message: '预约取消成功'
     }
   } catch (err) {
     console.error('取消预约失败', err)

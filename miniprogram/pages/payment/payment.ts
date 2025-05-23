@@ -15,13 +15,13 @@ Page({
     appointmentId: '',
     amount: 0,
     hours: 0,
-    qrCodeUrl: ''
+    customerServiceWechat: 'roomservice2024' // 客服微信号，可根据需要修改
   },
   
   onLoad(options) {
     const { appointmentId, amount, hours } = options;
     
-    if (!appointmentId || !hours) {
+    if (!appointmentId) {
       Message.error({
         context: this,
         offset: [20, 32],
@@ -39,19 +39,33 @@ Page({
     // 设置数据
     this.setData({
       appointmentId,
-      amount: Number(amount),
-      hours: Number(hours),
-      qrCodeUrl: PAYMENT_QR_CODES[Number(hours)] || PAYMENT_QR_CODES[1] // 默认使用1小时的收款码
+      amount: Number(amount) || 0,
+      hours: Number(hours) || 1
     });
   },
   
-  // 用户确认已完成支付
-  confirmPayment() {
+  // 复制客服微信号
+  copyWechatId() {
+    wx.setClipboardData({
+      data: this.data.customerServiceWechat,
+      success: () => {
+        Message.success({
+          context: this,
+          offset: [20, 32],
+          duration: 2000,
+          content: '客服微信号已复制'
+        });
+      }
+    });
+  },
+  
+  // 确认已联系客服
+  confirmReservation() {
     wx.showLoading({ title: '提交中...' });
     
-    // 调用云函数标记用户已完成支付（等待后台确认）
+    // 调用云函数修改预约状态为"待审核"
     wx.cloud.callFunction({
-      name: 'confirmPayment',
+      name: 'confirmReservation',
       data: {
         appointmentId: this.data.appointmentId
       },
@@ -65,7 +79,7 @@ Page({
             context: this,
             offset: [20, 32],
             duration: 2000,
-            content: '已提交支付确认，待管理员审核'
+            content: '已提交预约确认，待客服审核'
           });
           
           // 延迟返回
@@ -85,7 +99,7 @@ Page({
       },
       fail: (err) => {
         wx.hideLoading();
-        console.error('确认支付失败', err);
+        console.error('确认预约失败', err);
         
         Message.error({
           context: this,
@@ -97,13 +111,13 @@ Page({
     });
   },
   
-  // 取消支付，返回上一页
-  cancelPayment() {
+  // 取消预约
+  cancelReservation() {
     wx.showModal({
       title: '确认取消',
       content: '确定要取消此次预约吗？',
       confirmText: '确定取消',
-      cancelText: '继续支付',
+      cancelText: '继续预约',
       success: (res) => {
         if (res.confirm) {
           wx.showLoading({ title: '取消中...' });

@@ -6,8 +6,8 @@
 
 .payment-header {
   text-align: center;
-  margin-bottom: 60rpx;
-  padding: 40rpx 0;
+  margin-bottom: 40rpx;
+  padding: 30rpx 0;
 }
 
 .header-title {
@@ -17,10 +17,101 @@
   margin-bottom: 20rpx;
 }
 
+.reservation-info {
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
 .amount {
-  font-size: 60rpx;
+  font-size: 36rpx;
   font-weight: bold;
   color: #0052d9;
+}
+
+.contact-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.contact-card {
+  background-color: #f9f9f9;
+  border-radius: 12rpx;
+  padding: 30rpx;
+}
+
+.wechat-id {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+
+.value {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.copy-btn {
+  background-color: #0052d9;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 6rpx;
+}
+
+.contact-tip {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.action-buttons {
+  margin: 40rpx 0;
+}
+
+.payment-notice {
+  margin-top: 60rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.notice-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.notice-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 10rpx;
+}
+
+.mt-4 {
+  margin-top: 20rpx;
 }
 
 .qrcode-section {
@@ -72,36 +163,6 @@
   color: #666;
   margin-top: 20rpx;
   text-align: center;
-}
-
-.action-buttons {
-  margin: 40rpx 0;
-}
-
-.payment-notice {
-  margin-top: 60rpx;
-  background-color: #fff;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
-.notice-title {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
-}
-
-.notice-item {
-  font-size: 26rpx;
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 10rpx;
-}
-
-.mt-4 {
-  margin-top: 20rpx;
 }
 
 .zoom-icon {

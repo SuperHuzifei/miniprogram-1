@@ -36,12 +36,12 @@
           </view>
           <view class="appointment-action">
             <!-- 不同状态显示不同按钮 -->
-            <block wx:if="{{!item.isPaid && !item.isCanceled}}">
-              <!-- 待支付状态 -->
-              <t-button theme="primary" size="small" bindtap="goPay" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">支付页面</t-button>
+            <block wx:if="{{item.status === '待提交'}}">
+              <!-- 待提交状态 -->
+              <t-button theme="primary" size="small" bindtap="goPay" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">联系客服</t-button>
             </block>
             <block wx:elif="{{!item.isCanceled}}">
-              <!-- 已支付但未取消状态 -->
+              <!-- 其他未取消状态 -->
               <t-button theme="danger" size="small" variant="outline" bindtap="cancelAppointment" data-id="{{item._id}}">取消预约</t-button>
             </block>
           </view>
