@@ -29,7 +29,7 @@ exports.main = async (event, context) => {
     }
     
     // 如果已经取消，返回错误
-    if (appointment.data.isCanceled) {
+    if (appointment.data.status === '已取消') {
       return {
         success: false,
         message: '该预约已经取消'
@@ -39,7 +39,6 @@ exports.main = async (event, context) => {
     // 更新预约状态为已取消
     await db.collection('appointments').doc(id).update({
       data: {
-        isCanceled: true,
         status: '已取消'
       }
     })

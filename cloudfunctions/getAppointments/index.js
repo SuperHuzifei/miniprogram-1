@@ -26,13 +26,9 @@ exports.main = async (event, context) => {
         processedItem.amount = processedItem.hours * 20; // 每小时20元
       }
       
-      // 确保status字段存在（不使用confirmTime判断）
+      // 确保status字段存在
       if (!processedItem.status) {
-        if (processedItem.isCanceled) {
-          processedItem.status = '已取消';
-        } else {
-          processedItem.status = '待提交';
-        }
+        processedItem.status = '待提交';
       }
       
       return processedItem;

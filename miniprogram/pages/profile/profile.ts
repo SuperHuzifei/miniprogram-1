@@ -12,7 +12,6 @@ interface Appointment {
   phoneFormatted?: string;
   timeFormatted?: string; // 格式化后的时间显示
   status: string;
-  isCanceled: boolean;
   hours: number;
   amount?: number;
   statusClass?: string;

@@ -30,7 +30,7 @@ exports.main = async (event, context) => {
     // 查询指定日期已有的预约
     const bookedAppointments = await db.collection('appointments').where({
       date: date,
-      isCanceled: false // 只考虑未取消的预约
+      status: { $ne: '已取消' } // 只考虑未取消的预约
     }).get()
     
     // 收集所有已预约的时间段

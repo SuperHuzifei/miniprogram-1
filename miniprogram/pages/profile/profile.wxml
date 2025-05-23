@@ -40,7 +40,7 @@
               <!-- 待提交状态 -->
               <t-button theme="primary" size="small" bindtap="goPay" data-id="{{item._id}}" data-amount="{{item.amount}}" data-hours="{{item.hours}}">联系客服</t-button>
             </block>
-            <block wx:elif="{{!item.isCanceled}}">
+            <block wx:elif="{{item.status !== '已取消'}}">
               <!-- 其他未取消状态 -->
               <t-button theme="danger" size="small" variant="outline" bindtap="cancelAppointment" data-id="{{item._id}}">取消预约</t-button>
             </block>
@@ -68,7 +68,7 @@
 <!-- Confirm Dialog -->
 <t-dialog visible="{{showConfirmDialog}}" title="确认取消" confirm-btn="确定" cancel-btn="取消" bind:confirm="confirmCancel" bind:cancel="closeDialog">
   <view slot="content">
-    确认取消预约？我们将在 1 个工作日内完成退款审核，并为您原路退回款项。
+    确认取消此次预约？取消后将无法恢复，如需使用请重新预约。
   </view>
 </t-dialog>
 

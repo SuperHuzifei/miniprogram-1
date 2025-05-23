@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
     }
     
     // 检查预约状态
-    if (appointment.data.isCanceled) {
+    if (appointment.data.status === '已取消') {
       return {
         success: false,
         message: '该预约已取消'
