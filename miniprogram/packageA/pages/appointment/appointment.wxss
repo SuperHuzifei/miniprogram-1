@@ -1,0 +1,340 @@
+.container {
+  padding: 0 0 40rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Login Prompt */
+.login-prompt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-prompt-content {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 60rpx 40rpx;
+  width: 80%;
+  max-width: 600rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.info-icon {
+  color: #0052d9;
+  margin-bottom: 30rpx;
+}
+
+.prompt-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.prompt-desc {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+}
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.appointment-content {
+  padding: 30rpx;
+}
+
+/* Calendar Header */
+.calendar-header {
+  margin-bottom: 30rpx;
+}
+
+.month-selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month-arrow {
+  padding: 10rpx;
+}
+
+.current-month {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Weekdays */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 20rpx;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 10rpx 0;
+}
+
+/* Calendar Days */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 10rpx;
+  margin-bottom: 40rpx;
+}
+
+.calendar-day {
+  position: relative;
+  height: 80rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  border-radius: 8rpx;
+}
+
+.current-month {
+  color: #333;
+}
+
+.other-month {
+  color: #ccc;
+}
+
+.available {
+  background-color: #f0f9ff;
+}
+
+.selected {
+  background-color: #0052d9;
+  color: #fff;
+}
+
+.dot {
+  position: absolute;
+  bottom: 8rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background-color: #0052d9;
+}
+
+.selected .dot {
+  background-color: #fff;
+}
+
+/* Selected Date */
+.selected-date {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.date-display {
+  font-size: 32rpx;
+  color: #0052d9;
+  font-weight: 500;
+}
+
+/* Time Slots */
+.time-slots {
+  margin-bottom: 30rpx;
+}
+
+.time-slots-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.loading-icon {
+  margin-bottom: 20rpx;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.time-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 15rpx;
+}
+
+.time-slot {
+  position: relative;
+  padding: 12rpx 8rpx;
+  text-align: center;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.time-status {
+  position: absolute;
+  bottom: 4rpx;
+  right: 4rpx;
+  font-size: 18rpx;
+  color: #ff4d4f;
+}
+
+.time-slot.available {
+  background-color: #f0f9ff;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.time-slot.unavailable {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.time-slot.selected {
+  background-color: #0052d9;
+  color: #fff;
+  border: 1px solid #0052d9;
+}
+
+.time-slot.cleaning {
+  background-color: #f0f0f0;
+  color: #999;
+  border: 1px solid #dcdcdc;
+}
+
+.cleaning-status {
+  color: #ff9800 !important;
+  font-size: 18rpx;
+}
+
+/* Phone Input */
+.phone-input {
+  margin-bottom: 40rpx;
+}
+
+.phone-input input {
+  border: 1px solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  height: 88rpx;
+  z-index: 1;
+  position: relative;
+}
+
+/* Submit Button */
+.submit-button {
+  margin-top: 20rpx;
+}
+
+/* Utility Classes */
+.mt-4 {
+  margin-top: 40rpx;
+}
+
+.header-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.month-text {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.weekday {
+  font-size: 26rpx;
+  color: #999;
+  padding: 10rpx 0;
+}
+
+.calendar-day {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 4rpx;
+  font-size: 28rpx;
+}
+
+.day-available {
+  background-color: #e6f2ff;
+  color: #0052d9;
+}
+
+.day-unavailable {
+  background-color: #f3f3f3;
+  color: #999;
+}
+
+.day-other-month {
+  color: #ccc;
+}
+
+.day-selected {
+  background-color: #0052d9;
+  color: white;
+}
+
+.time-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 12rpx;
+  margin: 12rpx 0;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.time-slot-available {
+  background-color: #e6f2ff;
+  color: #0052d9;
+  border: 2rpx solid #0052d9;
+}
+
+.time-slot-unavailable {
+  background-color: #f3f3f3;
+  color: #999;
+  border: 2rpx solid #dcdcdc;
+}
+
+.time-slot-selected {
+  background-color: #0052d9;
+  color: white;
+  border: 2rpx solid #0052d9;
+}
+
+.submit-section {
+  margin-top: 40rpx;
+} 

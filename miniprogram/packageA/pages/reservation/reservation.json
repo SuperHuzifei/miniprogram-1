@@ -1,7 +1,7 @@
 {
   "usingComponents": {
-    "t-icon": "tdesign-miniprogram/icon/icon",
     "t-button": "tdesign-miniprogram/button/button",
+    "t-icon": "tdesign-miniprogram/icon/icon",
     "t-message": "tdesign-miniprogram/message/message"
   },
   "navigationBarTitleText": "预约"

@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="payment-header">
+    <view class="header-title">预约详情</view>
+    <view class="reservation-info">预约时长: {{hours}}小时</view>
+    <view class="amount">{{amount}}</view>
+  </view>
+  
+  <view class="contact-section">
+    <view class="section-title">预约已提交，可联系客服了解进度</view>
+    <view class="contact-card">
+      <view class="wechat-id">
+        <text class="label">客服微信号:</text>
+        <text class="value">{{customerServiceWechat}}</text>
+        <button class="copy-btn" size="mini" bindtap="copyWechatId">复制</button>
+      </view>
+      <view class="contact-tip">添加客服微信，获取预约审核进度及更多信息</view>
+    </view>
+  </view>
+  
+  <view class="action-buttons">
+    <t-button theme="primary" size="large" block bindtap="closeReservation">暂时关闭</t-button>
+    <t-button theme="default" size="large" block bindtap="cancelReservation" class="mt-4">取消预约</t-button>
+  </view>
+  
+  <view class="payment-notice">
+    <view class="notice-title">温馨提示</view>
+    <view class="notice-item">1. 预约已自动提交，正在审核中</view>
+    <view class="notice-item">2. 请添加客服微信获取更多预约信息</view>
+    <view class="notice-item">3. 预约详情可在"我的预约"中查看</view>
+  </view>
+</view>
+
+<!-- Message -->
+<t-message id="t-message" /> 

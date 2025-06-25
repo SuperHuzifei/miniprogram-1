@@ -13,7 +13,7 @@
   
   <!-- Logo -->
   <view class="logo-container">
-    <image src="/assets/images/logo.png" mode="aspectFit" class="logo"></image>
+    <image src="/assets/images-compressed/logo.png" mode="aspectFit" class="logo"></image>
   </view>
   
   <!-- Carousel -->

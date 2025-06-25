@@ -1,34 +1,81 @@
 <view class="container">
-  <view class="payment-header">
-    <view class="header-title">预约详情</view>
-    <view class="reservation-info">预约时长: {{hours}}小时</view>
-    <view class="amount">金额: ¥ {{amount}}</view>
+  <t-message id="t-message" />
+  
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40rpx" class="loading" />
+    <view class="loading-text">加载中...</view>
   </view>
   
-  <view class="contact-section">
-    <view class="section-title">预约已提交，可联系客服了解进度</view>
-    <view class="contact-card">
-      <view class="wechat-id">
-        <text class="label">客服微信号:</text>
-        <text class="value">roomservice2024</text>
-        <button class="copy-btn" size="mini" bindtap="copyWechatId">复制</button>
+  <!-- 预约详情 -->
+  <view class="appointment-container" wx:if="{{!loading && appointment}}">
+    <view class="card">
+      <view class="card-header">
+        <view class="card-title">预约详情</view>
+        <view class="card-status {{appointment.statusClass}}">{{appointment.status}}</view>
       </view>
-      <view class="contact-tip">添加客服微信，获取预约审核进度及更多信息</view>
+      
+      <view class="info-item">
+        <view class="info-label">预约日期</view>
+        <view class="info-value">{{appointment.dateFormatted}}</view>
+      </view>
+      
+      <view class="info-item">
+        <view class="info-label">预约时间</view>
+        <view class="info-value">{{appointment.timeFormatted}}</view>
+      </view>
+      
+      <view class="info-item">
+        <view class="info-label">联系电话</view>
+        <view class="info-value">{{appointment.phoneFormatted || appointment.phone}}</view>
+      </view>
+      
+      <view class="info-item">
+        <view class="info-label">预约时长</view>
+        <view class="info-value">{{hours}}小时</view>
+      </view>
+      
+      <view class="info-item price-item">
+        <view class="info-label">应付金额</view>
+        <view class="info-value price">{{amount}}</view>
+      </view>
+    </view>
+    
+    <!-- 支付说明 -->
+    <view class="payment-info">
+      <view class="payment-title">支付说明</view>
+      <view class="payment-desc">
+        <text>1. 请点击下方"确认支付"按钮；</text>
+        <text>2. 添加客服微信：{{wechatNumber}}，发送预约码完成支付；</text>
+        <text>3. 预约成功后，请按时到达预约地点。</text>
+      </view>
+      <view class="copy-btn" bindtap="copyWechatNumber">复制微信号</view>
+    </view>
+    
+    <!-- 支付按钮 -->
+    <view class="btn-container">
+      <t-button theme="primary" size="large" block bindtap="showPayConfirmDialog">确认支付</t-button>
+      <t-button theme="default" size="large" block bindtap="navigateBack" class="cancel-btn">返回</t-button>
     </view>
   </view>
   
-  <view class="action-buttons">
-    <t-button theme="primary" size="large" block bindtap="closeReservation">暂时关闭</t-button>
-    <t-button theme="default" size="large" block bindtap="cancelReservation" class="mt-4">取消预约</t-button>
-  </view>
+  <!-- 支付确认对话框 -->
+  <t-dialog
+    visible="{{showConfirmPayDialog}}"
+    title="确认支付"
+    content="请确认是否支付{{amount}}元用于{{hours}}小时的房间预约？"
+    confirm-btn="确认支付"
+    cancel-btn="取消"
+    bind:confirm="confirmPayment"
+    bind:cancel="closePayConfirmDialog"
+  />
   
-  <view class="payment-notice">
-    <view class="notice-title">温馨提示</view>
-    <view class="notice-item">1. 预约已自动提交，正在审核中</view>
-    <view class="notice-item">2. 请添加客服微信获取更多预约信息</view>
-    <view class="notice-item">3. 预约详情可在"我的预约"中查看</view>
-  </view>
-</view>
-
-<!-- Message -->
-<t-message id="t-message" /> 
+  <!-- 支付成功对话框 -->
+  <t-dialog
+    visible="{{showSuccessDialog}}"
+    title="支付成功"
+    content="请添加客服微信：{{wechatNumber}}，发送预约码完成确认。预约成功后，请按时到达预约地点。"
+    confirm-btn="我知道了"
+    bind:confirm="closeSuccessDialog"
+  />
+</view> 

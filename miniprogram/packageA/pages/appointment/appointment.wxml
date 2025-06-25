@@ -1,0 +1,107 @@
+<view class="container">
+  <!-- Login Prompt -->
+  <view class="login-prompt" wx:if="{{!isLogin}}">
+    <view class="login-prompt-content">
+      <t-icon name="info-circle" size="96rpx" class="info-icon"></t-icon>
+      <view class="prompt-title">请先登录</view>
+      <view class="prompt-desc">登录后才能使用预约功能</view>
+      <t-button theme="primary" size="medium" class="mt-4" bind:tap="goToLogin">去登录</t-button>
+    </view>
+  </view>
+  
+  <view class="appointment-content {{!isLogin ? 'blurred' : ''}}">
+    <!-- Calendar Header -->
+    <view class="calendar-header">
+      <view class="month-selector">
+        <view class="month-arrow" bindtap="prevMonth">
+          <t-icon name="chevron-left" size="48rpx" />
+        </view>
+        <view class="current-month">{{year}}年{{month}}月</view>
+        <view class="month-arrow" bindtap="nextMonth">
+          <t-icon name="chevron-right" size="48rpx" />
+        </view>
+      </view>
+    </view>
+    
+    <!-- Calendar Weekdays -->
+    <view class="weekdays">
+      <view class="weekday">日</view>
+      <view class="weekday">一</view>
+      <view class="weekday">二</view>
+      <view class="weekday">三</view>
+      <view class="weekday">四</view>
+      <view class="weekday">五</view>
+      <view class="weekday">六</view>
+    </view>
+    
+    <!-- Calendar Days -->
+    <view class="calendar-days">
+      <block wx:for="{{calendarDays}}" wx:key="index">
+        <view 
+          class="calendar-day {{item.isCurrentMonth ? 'current-month' : 'other-month'}} {{item.isSelected ? 'selected' : ''}} {{item.isAvailable && item.isCurrentMonth ? 'available' : ''}}"
+          bindtap="selectDate"
+          data-day="{{item.day}}"
+          data-month="{{item.month}}"
+          data-year="{{item.year}}"
+        >
+          {{item.day}}
+          <view class="dot" wx:if="{{item.isAvailable && item.isCurrentMonth}}"></view>
+        </view>
+      </block>
+    </view>
+    
+    <!-- Selected Date -->
+    <view class="selected-date" wx:if="{{selectedDate}}">
+      <view class="section-title">已选择日期</view>
+      <view class="date-display">{{selectedDateFormatted}}</view>
+    </view>
+    
+    <!-- Time Slots -->
+    <view class="time-slots" wx:if="{{selectedDate}}">
+      <view class="section-title">选择时间段</view>
+      
+      <!-- Loading State -->
+      <view class="time-slots-loading" wx:if="{{loadingTimeSlots}}">
+        <t-loading theme="circular" size="40rpx" class="loading-icon"></t-loading>
+        <view class="loading-text">加载可用时间段...</view>
+      </view>
+      
+      <!-- Time Slots Grid -->
+      <view class="time-slot-grid" wx:else>
+        <block wx:for="{{timeSlots}}" wx:key="index">
+          <view 
+            class="time-slot {{item.isAvailable ? 'available' : 'unavailable'}} {{item.isSelected ? 'selected' : ''}} {{item.isCleaning ? 'cleaning' : ''}}"
+            bindtap="selectTimeSlot"
+            data-index="{{index}}"
+          >
+            {{item.time}}
+            <view class="time-status" wx:if="{{!item.isAvailable && !item.isCleaning}}">已预约</view>
+            <view class="time-status cleaning-status" wx:if="{{item.isCleaning}}">清洁中</view>
+          </view>
+        </block>
+      </view>
+    </view>
+    
+    <!-- Phone Input -->
+    <view class="phone-input" wx:if="{{selectedTimeSlots.length > 0}}">
+      <view class="section-title">联系电话</view>
+      <input 
+        type="number" 
+        placeholder="请输入手机号码" 
+        maxlength="11"
+        bindinput="onPhoneInput"
+        value="{{phoneNumber}}"
+        cursor-spacing="80"
+        adjust-position="{{true}}"
+      />
+    </view>
+    
+    <!-- Submit Button -->
+    <view class="submit-button" wx:if="{{selectedTimeSlots.length > 0}}">
+      <t-button theme="primary" size="large" block bindtap="submitAppointment">提交预约</t-button>
+    </view>
+  </view>
+</view>
+
+<!-- Message -->
+<t-message id="t-message" /> 

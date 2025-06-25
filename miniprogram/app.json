@@ -2,11 +2,26 @@
   "pages": [
     "pages/home/home",
     "pages/login/login",
-    "pages/appointment/appointment",
     "pages/profile/profile",
-    "pages/payment/payment",
-    "pages/reservation/reservation",
-    "pages/admin/admin"
+    "pages/appointment/appointment",
+    "pages/reservation/reservation"
+  ],
+  "subpackages": [
+    {
+      "root": "packageA",
+      "pages": [
+        "pages/payment/payment",
+        "pages/admin/admin"
+      ]
+    },
+    {
+      "root": "packageB",
+      "name": "tdui",
+      "independent": true,
+      "pages": [
+        "pages/index/index"
+      ]
+    }
   ],
   "window": {
     "navigationBarTextStyle": "black",

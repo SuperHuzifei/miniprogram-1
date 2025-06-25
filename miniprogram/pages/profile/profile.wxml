@@ -41,7 +41,7 @@
             <view class="appointment-time mt-2">时间：{{item.timeFormatted || '暂无时间信息'}}</view>
             <view class="appointment-phone mt-2">手机号：{{item.phoneFormatted}}</view>
             <view class="appointment-status mt-2 {{item.statusClass}}">状态：{{item.status}}</view>
-            <view class="appointment-amount mt-2" wx:if="{{item.amount}}">金额：¥{{item.amount}}</view>
+            <view class="appointment-amount mt-2" wx:if="{{item.amount}}">{{item.amount}}</view>
             <view class="appointment-password mt-2" wx:if="{{item.doorPassword && item.status === '已确认'}}">
               <text>开门密码：</text>
               <text class="password-text">{{item.doorPassword}}</text>

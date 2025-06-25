@@ -1,6 +1,6 @@
 <view class="container">
   <view class="login-header">
-    <image class="logo" src="/assets/icons/logo.png" mode="aspectFit"></image>
+    <image class="logo" src="/assets/images-compressed/logo.png" mode="aspectFit"></image>
     <view class="title">房间预约系统</view>
     <view class="subtitle">请授权登录以使用完整功能</view>
   </view>

@@ -1,115 +1,147 @@
+/* pages/reservation/reservation.wxss */
 .container {
-  padding: 30rpx;
+  padding: 32rpx;
+  background-color: #f6f6f6;
   min-height: 100vh;
-  background-color: #f8f8f8;
+  box-sizing: border-box;
 }
 
-.payment-header {
-  text-align: center;
-  margin-bottom: 40rpx;
-  padding: 30rpx 0;
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
 }
 
-.header-title {
-  font-size: 36rpx;
-  font-weight: bold;
+.loading-text {
+  margin-top: 20rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.appointment-container {
+  width: 100%;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 32rpx;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 500;
   color: #333;
-  margin-bottom: 20rpx;
 }
 
-.reservation-info {
-  font-size: 30rpx;
+.card-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 100rpx;
+  background-color: #f0f0f0;
   color: #666;
-  margin-bottom: 10rpx;
 }
 
-.amount {
-  font-size: 36rpx;
-  font-weight: bold;
+.status-reviewing {
+  background-color: #e8f4ff;
   color: #0052d9;
 }
 
-.contact-section {
-  background-color: #fff;
-  border-radius: 16rpx;
-  padding: 40rpx;
-  margin-bottom: 40rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+.status-success {
+  background-color: #e8f8f2;
+  color: #00a870;
 }
 
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 30rpx;
-  text-align: center;
+.status-canceled {
+  background-color: #fff0ed;
+  color: #e34d59;
 }
 
-.contact-card {
-  background-color: #f9f9f9;
-  border-radius: 12rpx;
-  padding: 30rpx;
-}
-
-.wechat-id {
+.info-item {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
 }
 
-.label {
+.info-label {
+  font-size: 28rpx;
+  color: #888;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  text-align: right;
+}
+
+.price-item {
+  margin-top: 16rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.price {
+  font-size: 36rpx;
+  color: #e34d59;
+  font-weight: bold;
+}
+
+.payment-info {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.payment-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.payment-desc {
+  display: flex;
+  flex-direction: column;
   font-size: 28rpx;
   color: #666;
-  margin-right: 10rpx;
+  line-height: 1.6;
 }
 
-.value {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333;
-  flex: 1;
+.payment-desc text {
+  margin-bottom: 12rpx;
 }
 
 .copy-btn {
-  background-color: #0052d9;
-  color: #fff;
-  font-size: 24rpx;
-  padding: 8rpx 16rpx;
-  border-radius: 6rpx;
-}
-
-.contact-tip {
-  font-size: 26rpx;
-  color: #666;
-  line-height: 1.5;
-}
-
-.action-buttons {
-  margin: 40rpx 0;
-}
-
-.payment-notice {
-  margin-top: 60rpx;
-  background-color: #fff;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
-.notice-title {
-  font-size: 30rpx;
-  font-weight: bold;
+  width: fit-content;
+  margin-top: 24rpx;
+  padding: 10rpx 32rpx;
+  border-radius: 8rpx;
+  background-color: #f0f0f0;
   color: #333;
-  margin-bottom: 20rpx;
-}
-
-.notice-item {
   font-size: 26rpx;
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 10rpx;
 }
 
-.mt-4 {
-  margin-top: 20rpx;
+.btn-container {
+  margin-top: 64rpx;
+}
+
+.cancel-btn {
+  margin-top: 24rpx;
 } 
