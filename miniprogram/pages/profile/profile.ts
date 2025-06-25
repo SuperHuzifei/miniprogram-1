@@ -71,6 +71,16 @@ function getStatusClass(status: string): string {
   return '';
 }
 
+// 工具函数：计算价格
+function calculateAmount(hours: number): number {
+  if (hours === 1) {
+    return 45; // 1小时45元
+  } else if (hours > 1) {
+    return hours * 35; // 多于1小时，每小时35元
+  }
+  return 0;
+}
+
 Page({
   data: {
     isLogin: false,
@@ -146,7 +156,7 @@ Page({
           
           // 如果没有金额，根据小时数计算
           if (!item.amount && item.hours) {
-            item.amount = item.hours * 20; // 每小时20元
+            item.amount = calculateAmount(item.hours);
           }
           
           return {

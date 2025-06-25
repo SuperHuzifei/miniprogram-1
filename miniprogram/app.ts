@@ -8,7 +8,7 @@ App<IAppOption>({
     // 初始化云环境
     if (wx.cloud) {
       wx.cloud.init({
-        env: cloud.DYNAMIC_CURRENT_ENV, // 使用动态环境ID
+        env: wx.cloud.DYNAMIC_CURRENT_ENV, // 使用动态环境ID
         traceUser: true,
       });
     } else {

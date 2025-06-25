@@ -10,8 +10,11 @@ exports.main = async (event, context) => {
   const { userInfo } = event
   
   try {
+    console.log('开始处理用户登录请求', { openid: wxContext.OPENID, userInfo })
+    
     // 验证用户信息
     if (!userInfo) {
+      console.error('用户信息不能为空')
       return {
         success: false,
         message: '用户信息不能为空'
@@ -20,6 +23,7 @@ exports.main = async (event, context) => {
     
     // 验证 openid
     if (!wxContext.OPENID) {
+      console.error('无法获取用户 openid')
       return {
         success: false,
         message: '用户未登录'
@@ -31,13 +35,18 @@ exports.main = async (event, context) => {
     const avatarUrl = userInfo.avatarUrl || ''
     const gender = userInfo.gender || 0
     
+    console.log('处理用户数据', { nickname, avatarUrl, gender })
+    
     // 查询用户是否已存在
     const userRecord = await db.collection('users').where({
       openid: wxContext.OPENID
     }).get()
     
+    console.log('查询用户记录结果', { count: userRecord.data.length })
+    
     if (userRecord.data.length > 0) {
       // 用户已存在，更新用户信息
+      console.log('更新已存在用户信息')
       await db.collection('users').where({
         openid: wxContext.OPENID
       }).update({
@@ -50,6 +59,7 @@ exports.main = async (event, context) => {
       })
     } else {
       // 用户不存在，创建新用户
+      console.log('创建新用户')
       await db.collection('users').add({
         data: {
           openid: wxContext.OPENID,
@@ -62,6 +72,7 @@ exports.main = async (event, context) => {
       })
     }
     
+    console.log('用户登录成功')
     return {
       success: true,
       openid: wxContext.OPENID,
@@ -76,7 +87,7 @@ exports.main = async (event, context) => {
     return {
       success: false,
       message: '用户登录失败，请稍后再试',
-      error: process.env.NODE_ENV === 'development' ? err : undefined
+      error: err.message
     }
   }
 } 

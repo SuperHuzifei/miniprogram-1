@@ -105,7 +105,7 @@
         <block wx:for="{{appointments}}" wx:key="_id">
           <view class="appointment-card">
             <view class="appointment-header">
-              <view class="appointment-title">{{item.roomName}}</view>
+              <view class="appointment-title">预约ID: {{item._id}}</view>
               <view class="appointment-status {{item.statusClass}}">{{item.status}}</view>
             </view>
             

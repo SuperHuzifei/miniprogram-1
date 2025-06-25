@@ -16,6 +16,11 @@ Page({
         redirectUrl: decodeURIComponent(options.redirect)
       });
     }
+    
+    // 检查是否已经登录
+    if (app.globalData.isLogin && app.globalData.userInfo) {
+      this.navigateToRedirect();
+    }
   },
   
   // 处理获取用户信息
@@ -41,19 +46,48 @@ Page({
             
             // 登录成功后跳转到指定页面
             setTimeout(() => {
-              wx.switchTab({
-                url: this.data.redirectUrl
-              });
+              this.navigateToRedirect();
             }, 1000);
           } else {
             this.setData({ showLoginFailDialog: true });
           }
         });
       },
-      fail: () => {
+      fail: (err) => {
+        console.error('获取用户信息失败', err);
         this.setData({ showLoginFailDialog: true });
       }
     });
+  },
+  
+  // 导航到重定向页面
+  navigateToRedirect() {
+    const { redirectUrl } = this.data;
+    
+    // 判断是否是 tabBar 页面
+    const tabBarPages = ['/pages/home/home', '/pages/appointment/appointment', '/pages/profile/profile'];
+    
+    if (tabBarPages.includes(redirectUrl)) {
+      wx.switchTab({
+        url: redirectUrl,
+        fail: (err) => {
+          console.error('跳转失败', err);
+          wx.switchTab({
+            url: '/pages/home/home'
+          });
+        }
+      });
+    } else {
+      wx.navigateTo({
+        url: redirectUrl,
+        fail: (err) => {
+          console.error('跳转失败', err);
+          wx.switchTab({
+            url: '/pages/home/home'
+          });
+        }
+      });
+    }
   },
   
   // 返回上一页
