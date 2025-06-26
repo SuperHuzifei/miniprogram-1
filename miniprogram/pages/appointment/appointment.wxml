@@ -82,6 +82,29 @@
       </view>
     </view>
     
+    <!-- Price Display -->
+    <view class="price-display" wx:if="{{selectedTimeSlots.length > 0}}">
+      <view class="price-info">
+        <view class="price-label">预约时长</view>
+        <view class="price-value">{{selectedTimeSlots.length}}小时</view>
+      </view>
+      <view class="price-info">
+        <view class="price-label">原价</view>
+        <view class="price-value">¥{{originalPrice}}</view>
+      </view>
+      <view class="price-info" wx:if="{{discountAmount > 0}}">
+        <view class="price-label">优惠</view>
+        <view class="price-value discount-value">-¥{{discountAmount}}</view>
+      </view>
+      <view class="price-info">
+        <view class="price-label">实付金额</view>
+        <view class="price-amount">¥{{currentPrice}}</view>
+      </view>
+      <view class="price-tip" wx:if="{{selectedTimeSlots.length >= 4}}">
+        每多预约2小时优惠5元，当日费用封顶220元
+      </view>
+    </view>
+    
     <!-- Phone Input -->
     <view class="phone-input" wx:if="{{selectedTimeSlots.length > 0}}">
       <view class="section-title">联系电话</view>

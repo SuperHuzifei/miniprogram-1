@@ -37,7 +37,11 @@ Page({
       { label: '已确认', value: '已确认' },
       { label: '已取消', value: '已取消' },
       { label: '已完成', value: '已完成' }
-    ]
+    ],
+    
+    // 轮播图管理
+    bannerImages: [],
+    bannerImagesChanged: false
   },
 
   onLoad() {
@@ -80,6 +84,7 @@ Page({
         // 加载初始数据
         this.loadUsers();
         this.loadAppointments();
+        this.loadBannerImages();
         
         Message.success({
           context: this,
@@ -109,6 +114,11 @@ Page({
   onTabChange(e: any) {
     const { value } = e.detail;
     this.setData({ activeTab: value });
+    
+    // 如果切换到轮播图管理标签，加载轮播图数据
+    if (value === 'banner' && this.data.bannerImages.length === 0) {
+      this.loadBannerImages();
+    }
   },
   
   // 返回上一页
@@ -490,6 +500,324 @@ Page({
             });
           }
         }
+      }
+    });
+  },
+  
+  // ===== 轮播图管理功能 =====
+  
+  // 加载轮播图数据
+  async loadBannerImages() {
+    try {
+      this.setData({ loading: true });
+      
+      const db = wx.cloud.database();
+      // 尝试从数据库获取轮播图配置
+      const configRes = await db.collection('siteConfig').doc('bannerImages').get();
+      
+      if (configRes && configRes.data && configRes.data.images) {
+        this.setData({
+          bannerImages: configRes.data.images,
+          bannerImagesChanged: false,
+          loading: false
+        });
+      } else {
+        // 如果没有配置，则使用默认图片
+        this.setData({
+          bannerImages: [
+            { url: '/assets/images/banner1.jpg' },
+            { url: '/assets/images/banner2.jpg' },
+            { url: '/assets/images/banner3.jpg' },
+          ],
+          bannerImagesChanged: true,
+          loading: false
+        });
+      }
+    } catch (error) {
+      console.error('加载轮播图失败', error);
+      // 使用默认图片
+      this.setData({
+        bannerImages: [
+          { url: '/assets/images/banner1.jpg' },
+          { url: '/assets/images/banner2.jpg' },
+          { url: '/assets/images/banner3.jpg' },
+        ],
+        bannerImagesChanged: true,
+        loading: false
+      });
+    }
+  },
+  
+  // 选择轮播图图片
+  chooseBannerImage() {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        this.uploadBannerImage(res.tempFilePaths[0]);
+      }
+    });
+  },
+  
+  // 上传轮播图图片到云存储
+  async uploadBannerImage(filePath) {
+    try {
+      this.setData({ loading: true });
+      
+      // 生成随机文件名
+      const timestamp = new Date().getTime();
+      const randomNum = Math.floor(Math.random() * 1000);
+      const extension = filePath.match(/\.[^.]+$/)[0] || '';
+      const cloudPath = `banners/banner_${timestamp}_${randomNum}${extension}`;
+      
+      // 上传到云存储
+      const uploadRes = await wx.cloud.uploadFile({
+        cloudPath,
+        filePath,
+      });
+      
+      if (uploadRes.fileID) {
+        // 获取图片访问URL
+        const fileList = [{ fileID: uploadRes.fileID, max_age: 31536000 }];
+        const getTempRes = await wx.cloud.getTempFileURL({ fileList });
+        
+        if (getTempRes.fileList && getTempRes.fileList[0].tempFileURL) {
+          const newBannerImages = [...this.data.bannerImages, { 
+            url: getTempRes.fileList[0].tempFileURL,
+            fileID: uploadRes.fileID
+          }];
+          
+          this.setData({
+            bannerImages: newBannerImages,
+            bannerImagesChanged: true,
+            loading: false
+          });
+          
+          Message.success({
+            context: this,
+            offset: [20, 32],
+            content: '图片上传成功'
+          });
+        } else {
+          throw new Error('获取图片URL失败');
+        }
+      } else {
+        throw new Error('上传图片失败');
+      }
+    } catch (error) {
+      console.error('上传轮播图失败', error);
+      this.setData({ loading: false });
+      Message.error({
+        context: this,
+        offset: [20, 32],
+        content: '上传图片失败'
+      });
+    }
+  },
+  
+  // 删除轮播图
+  async deleteBanner(e) {
+    const { index } = e.currentTarget.dataset;
+    const banner = this.data.bannerImages[index];
+    
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这张轮播图吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            this.setData({ loading: true });
+            
+            // 如果有fileID，从云存储中删除
+            if (banner.fileID) {
+              try {
+                await wx.cloud.deleteFile({
+                  fileList: [banner.fileID]
+                });
+              } catch (error) {
+                console.error('删除云存储文件失败', error);
+                // 继续删除本地记录
+              }
+            }
+            
+            // 更新数据
+            const newBannerImages = [...this.data.bannerImages];
+            newBannerImages.splice(index, 1);
+            
+            this.setData({
+              bannerImages: newBannerImages,
+              bannerImagesChanged: true,
+              loading: false
+            });
+            
+            Message.success({
+              context: this,
+              offset: [20, 32],
+              content: '删除成功'
+            });
+          } catch (error) {
+            console.error('删除轮播图失败', error);
+            this.setData({ loading: false });
+            Message.error({
+              context: this,
+              offset: [20, 32],
+              content: '删除失败'
+            });
+          }
+        }
+      }
+    });
+  },
+  
+  // 上移轮播图
+  moveBannerUp(e) {
+    const { index } = e.currentTarget.dataset;
+    if (index > 0) {
+      const newBannerImages = [...this.data.bannerImages];
+      const temp = newBannerImages[index];
+      newBannerImages[index] = newBannerImages[index - 1];
+      newBannerImages[index - 1] = temp;
+      
+      this.setData({
+        bannerImages: newBannerImages,
+        bannerImagesChanged: true
+      });
+    }
+  },
+  
+  // 下移轮播图
+  moveBannerDown(e) {
+    const { index } = e.currentTarget.dataset;
+    if (index < this.data.bannerImages.length - 1) {
+      const newBannerImages = [...this.data.bannerImages];
+      const temp = newBannerImages[index];
+      newBannerImages[index] = newBannerImages[index + 1];
+      newBannerImages[index + 1] = temp;
+      
+      this.setData({
+        bannerImages: newBannerImages,
+        bannerImagesChanged: true
+      });
+    }
+  },
+  
+  // 预览图片
+  previewImage(e) {
+    const { url } = e.currentTarget.dataset;
+    wx.previewImage({
+      current: url,
+      urls: this.data.bannerImages.map(item => item.url)
+    });
+  },
+  
+  // 保存轮播图设置
+  async saveBannerImages() {
+    try {
+      this.setData({ loading: true });
+      
+      // 调用云函数保存轮播图配置
+      try {
+        const result = await wx.cloud.callFunction({
+          name: 'updateBannerImages',
+          data: { 
+            images: this.data.bannerImages
+          }
+        });
+        
+        if (result.result && result.result.success) {
+          this.setData({
+            bannerImagesChanged: false,
+            loading: false
+          });
+          
+          Message.success({
+            context: this,
+            offset: [20, 32],
+            content: '轮播图设置已保存'
+          });
+        } else {
+          throw new Error('保存失败');
+        }
+      } catch (callFunctionError) {
+        console.error('调用云函数失败', callFunctionError);
+        
+        // 尝试直接通过数据库API保存
+        const db = wx.cloud.database();
+        
+        // 检查是否存在siteConfig集合
+        try {
+          await db.createCollection('siteConfig');
+        } catch (error) {
+          // 集合可能已存在，忽略错误
+        }
+        
+        // 保存轮播图配置
+        try {
+          await db.collection('siteConfig').doc('bannerImages').update({
+            data: {
+              images: this.data.bannerImages,
+              updateTime: db.serverDate()
+            }
+          });
+        } catch (updateError) {
+          // 如果文档不存在，则添加新文档
+          await db.collection('siteConfig').add({
+            data: {
+              _id: 'bannerImages',
+              images: this.data.bannerImages,
+              createTime: db.serverDate(),
+              updateTime: db.serverDate()
+            }
+          });
+        }
+        
+        this.setData({
+          bannerImagesChanged: false,
+          loading: false
+        });
+        
+        Message.success({
+          context: this,
+          offset: [20, 32],
+          content: '轮播图设置已保存'
+        });
+      }
+    } catch (error) {
+      console.error('保存轮播图设置失败', error);
+      this.setData({ loading: false });
+      Message.error({
+        context: this,
+        offset: [20, 32],
+        content: '保存失败，请重试'
+      });
+    }
+  },
+  
+  // 跳转到管理员页面
+  goToAdmin() {
+    // 如果未登录，提示先登录
+    if (!this.data.isLogin) {
+      Message.info({
+        context: this,
+        offset: [20, 32],
+        duration: 2000,
+        content: '请先登录'
+      });
+      return;
+    }
+    
+    // 跳转到管理员页面
+    wx.navigateTo({
+      url: '/packageA/pages/admin/admin',
+      fail: (err) => {
+        console.error('跳转到管理员页面失败', err);
+        Message.error({
+          context: this,
+          offset: [20, 32],
+          duration: 2000,
+          content: '页面跳转失败'
+        });
       }
     });
   }

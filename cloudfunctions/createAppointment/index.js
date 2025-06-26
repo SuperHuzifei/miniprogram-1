@@ -58,14 +58,6 @@ exports.main = async (event, context) => {
     // 计算预约时长（小时数）
     const hours = times.length
     
-    // 计算价格：1小时45元，大于1小时时每小时35元
-    let amount = 0
-    if (hours === 1) {
-      amount = 45 // 1小时45元
-    } else if (hours > 1) {
-      amount = hours * 35 // 多于1小时，每小时35元
-    }
-    
     // 创建预约记录 - 直接设置状态为待审核
     const result = await db.collection('appointments').add({
       data: {
@@ -85,8 +77,7 @@ exports.main = async (event, context) => {
       message: '预约创建成功，请联系客服确认',
       data: {
         appointmentId: result._id,
-        hours,
-        amount: amount // 使用新的价格计算逻辑
+        hours
       }
     }
   } catch (err) {

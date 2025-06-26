@@ -25,7 +25,7 @@
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "房间预约系统",
+    "navigationBarTitleText": "预约系统",
     "navigationBarBackgroundColor": "#ffffff"
   },
   "tabBar": {

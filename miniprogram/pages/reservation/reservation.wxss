@@ -128,6 +128,11 @@
   margin-bottom: 12rpx;
 }
 
+.wechat-highlight {
+  color: #0052d9;
+  font-weight: bold;
+}
+
 .copy-btn {
   width: fit-content;
   margin-top: 24rpx;

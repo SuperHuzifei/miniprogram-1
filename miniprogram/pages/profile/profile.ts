@@ -73,12 +73,27 @@ function getStatusClass(status: string): string {
 
 // 工具函数：计算价格
 function calculateAmount(hours: number): number {
-  if (hours === 1) {
-    return 45; // 1小时45元
-  } else if (hours > 1) {
-    return hours * 35; // 多于1小时，每小时35元
+  if (hours === 0) return 0;
+  if (hours === 1) return 45; // 1小时45元
+  
+  // 优惠价格计算
+  if (hours === 2) {
+    return 70; // 前2小时70元
+  } else if (hours === 3) {
+    return 105; // 3小时 = 70 + 35
+  } else if (hours === 4) {
+    return 135; // 4小时 = 70 + 35 + 35 - 5
+  } else if (hours === 5) {
+    return 170; // 5小时 = 135 + 35
+  } else if (hours === 6) {
+    return 195; // 6小时 = 170 + 35 - 10
+  } else if (hours === 7) {
+    return 220; // 7小时 = 195 + 35 - 10
+  } else if (hours >= 8) {
+    return 220; // 8小时及以上封顶220元
   }
-  return 0;
+  
+  return hours * 35; // 默认情况，每小时35元
 }
 
 Page({
@@ -283,7 +298,7 @@ Page({
     
     // 跳转到管理员页面
     wx.navigateTo({
-      url: '/pages/admin/admin',
+      url: '/packageA/pages/admin/admin',
       fail: (err) => {
         console.error('跳转到管理员页面失败', err);
         Message.error({

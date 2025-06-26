@@ -11,6 +11,7 @@ Page({
     hours: 1,
     showConfirmPayDialog: false,
     showSuccessDialog: false,
+    showCancelDialog: false,
     wechatNumber: 'Huzifei1' // 客服微信号
   },
   
@@ -126,6 +127,79 @@ Page({
     // 返回个人中心页面
     wx.switchTab({
       url: '/pages/profile/profile'
+    });
+  },
+  
+  // 显示取消预约对话框
+  showCancelDialog() {
+    this.setData({
+      showCancelDialog: true
+    });
+  },
+  
+  // 关闭取消预约对话框
+  closeCancelDialog() {
+    this.setData({
+      showCancelDialog: false
+    });
+  },
+  
+  // 取消预约
+  cancelAppointment() {
+    // 关闭对话框
+    this.closeCancelDialog();
+    
+    // 显示加载提示
+    wx.showLoading({
+      title: '处理中...',
+      mask: true
+    });
+    
+    // 调用云函数取消预约
+    wx.cloud.callFunction({
+      name: 'cancelAppointment',
+      data: {
+        id: this.data.appointment._id
+      },
+      success: (res) => {
+        wx.hideLoading();
+        
+        const { success, message } = res.result || {};
+        
+        if (success) {
+          Message.success({
+            context: this,
+            offset: [20, 32],
+            duration: 2000,
+            content: '预约已取消'
+          });
+          
+          // 2秒后返回个人中心页面
+          setTimeout(() => {
+            wx.switchTab({
+              url: '/pages/profile/profile'
+            });
+          }, 2000);
+        } else {
+          Message.error({
+            context: this,
+            offset: [20, 32],
+            duration: 3000,
+            content: message || '取消预约失败，请重试'
+          });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('取消预约失败', err);
+        
+        Message.error({
+          context: this,
+          offset: [20, 32],
+          duration: 3000,
+          content: '取消预约失败，请重试'
+        });
+      }
     });
   },
   

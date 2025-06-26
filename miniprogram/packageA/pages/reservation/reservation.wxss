@@ -70,6 +70,10 @@
   flex: 1;
 }
 
+.wechat-highlight {
+  color: #0052d9;
+}
+
 .copy-btn {
   background-color: #0052d9;
   color: #fff;

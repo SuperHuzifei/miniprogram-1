@@ -10,7 +10,7 @@
     <view class="contact-card">
       <view class="wechat-id">
         <text class="label">客服微信号:</text>
-        <text class="value">{{customerServiceWechat}}</text>
+        <text class="value wechat-highlight">{{customerServiceWechat}}</text>
         <button class="copy-btn" size="mini" bindtap="copyWechatId">复制</button>
       </view>
       <view class="contact-tip">添加客服微信，获取预约审核进度及更多信息</view>
@@ -26,7 +26,7 @@
     <view class="notice-title">温馨提示</view>
     <view class="notice-item">1. 预约已自动提交，正在审核中</view>
     <view class="notice-item">2. 请添加客服微信获取更多预约信息</view>
-    <view class="notice-item">3. 预约详情可在"我的预约"中查看</view>
+    <view class="notice-item">3. 预约成功后，客服将会推送房间开门密码</view>
   </view>
 </view>
 

@@ -45,17 +45,17 @@
     <view class="payment-info">
       <view class="payment-title">支付说明</view>
       <view class="payment-desc">
-        <text>1. 请点击下方"确认支付"按钮；</text>
-        <text>2. 添加客服微信：{{wechatNumber}}，发送预约码完成支付；</text>
-        <text>3. 预约成功后，请按时到达预约地点。</text>
+        <text>1. 请点击下方按钮添加客服微信；</text>
+        <text>2. 添加客服微信：<text class="wechat-highlight">{{wechatNumber}}</text>，发送预约码完成支付；</text>
+        <text>3. 预约成功后，客服将会推送房间开门密码。</text>
       </view>
       <view class="copy-btn" bindtap="copyWechatNumber">复制微信号</view>
     </view>
     
     <!-- 支付按钮 -->
     <view class="btn-container">
-      <t-button theme="primary" size="large" block bindtap="showPayConfirmDialog">确认支付</t-button>
-      <t-button theme="default" size="large" block bindtap="navigateBack" class="cancel-btn">返回</t-button>
+      <t-button theme="primary" size="large" block bindtap="navigateBack">暂时关闭页面</t-button>
+      <t-button theme="danger" size="large" block bindtap="showCancelDialog" class="cancel-btn">取消预约</t-button>
     </view>
   </view>
   
@@ -68,6 +68,17 @@
     cancel-btn="取消"
     bind:confirm="confirmPayment"
     bind:cancel="closePayConfirmDialog"
+  />
+  
+  <!-- 取消预约确认对话框 -->
+  <t-dialog
+    visible="{{showCancelDialog}}"
+    title="取消预约"
+    content="确定要取消此次预约吗？取消后将无法恢复。"
+    confirm-btn="确认取消"
+    cancel-btn="再想想"
+    bind:confirm="cancelAppointment"
+    bind:cancel="closeCancelDialog"
   />
   
   <!-- 支付成功对话框 -->

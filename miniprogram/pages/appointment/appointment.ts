@@ -32,6 +32,9 @@ Page({
     selectedTimeSlots: [], // 选中的时间段索引数组
     phoneNumber: '',
     loadingTimeSlots: false,
+    currentPrice: 0, // 添加当前价格字段
+    originalPrice: 0,
+    discountAmount: 0,
   },
   
   onLoad() {
@@ -357,10 +360,50 @@ Page({
       selectedTimeSlots.push(index);
     }
     
+    // 计算价格
+    const currentPrice = this.calculatePrice(selectedTimeSlots.length);
+    
     this.setData({
       timeSlots,
-      selectedTimeSlots
+      selectedTimeSlots,
+      currentPrice
     });
+  },
+  
+  // 计算价格
+  calculatePrice(hours) {
+    if (hours === 0) return 0;
+    if (hours === 1) return 45; // 1小时45元
+    
+    // 原价计算（每小时35元）
+    const originalPrice = hours * 35;
+    
+    // 优惠价格计算
+    let discountedPrice = 0;
+    
+    if (hours === 2) {
+      discountedPrice = 70; // 前2小时70元
+    } else if (hours === 3) {
+      discountedPrice = 105; // 3小时 = 70 + 35
+    } else if (hours === 4) {
+      discountedPrice = 135; // 4小时 = 70 + 35 + 35 - 5
+    } else if (hours === 5) {
+      discountedPrice = 170; // 5小时 = 135 + 35
+    } else if (hours === 6) {
+      discountedPrice = 195; // 6小时 = 170 + 35 - 10
+    } else if (hours === 7) {
+      discountedPrice = 220; // 7小时 = 195 + 35 - 10
+    } else if (hours >= 8) {
+      discountedPrice = 220; // 8小时及以上封顶220元
+    }
+    
+    // 保存原价和优惠金额
+    this.setData({
+      originalPrice: originalPrice,
+      discountAmount: originalPrice - discountedPrice
+    });
+    
+    return discountedPrice;
   },
   
   // 上个月
@@ -430,7 +473,7 @@ Page({
       return;
     }
     
-    const { selectedDate, selectedTimeSlots, phoneNumber } = this.data;
+    const { selectedDate, selectedTimeSlots, phoneNumber, currentPrice } = this.data;
     
     // 验证表单
     if (!selectedDate) {
@@ -489,7 +532,7 @@ Page({
         if (success) {
           // 创建预约成功后，跳转到预约页面
           wx.navigateTo({
-            url: `/pages/reservation/reservation?appointmentId=${data.appointmentId}&amount=${data.amount}&hours=${data.hours}`
+            url: `/pages/reservation/reservation?appointmentId=${data.appointmentId}&amount=${currentPrice}&hours=${selectedTimeSlots.length}`
           });
         } else {
           Message.error({
@@ -532,7 +575,10 @@ Page({
       selectedDateFormatted: '',
       timeSlots,
       selectedTimeSlots: [],
-      phoneNumber: ''
+      phoneNumber: '',
+      currentPrice: 0,
+      originalPrice: 0,
+      discountAmount: 0
     });
   }
 }); 
