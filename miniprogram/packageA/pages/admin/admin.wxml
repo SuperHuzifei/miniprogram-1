@@ -128,6 +128,10 @@
                 <text class="value">{{item.timeFormatted}}</text>
               </view>
               <view class="info-item">
+                <text class="label">应付费用：</text>
+                <text class="value">¥{{item.amount || '未设置'}}</text>
+              </view>
+              <view class="info-item">
                 <text class="label">创建时间：</text>
                 <text class="value">{{item.createTime}}</text>
               </view>

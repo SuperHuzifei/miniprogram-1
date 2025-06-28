@@ -7,7 +7,7 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const { date, times, phone } = event
+  const { date, times, phone, amount } = event
   
   try {
     // 检查时间段是否连续
@@ -68,6 +68,7 @@ exports.main = async (event, context) => {
         phone,
         createTime: db.serverDate(),
         hours,
+        amount, // 保存前端计算的价格
         status: '待审核'
       }
     })

@@ -6,7 +6,9 @@ const app = getApp<IAppOption>();
 Page({
   data: {
     showLoginFailDialog: false,
-    redirectUrl: '/pages/home/home' // 默认重定向到首页
+    redirectUrl: '/pages/home/home', // 默认重定向到首页
+    privacyChecked: false, // 添加隐私政策勾选状态
+    showPrivacyDialog: false // 添加隐私政策弹窗显示状态
   },
   
   onLoad(options) {
@@ -25,6 +27,17 @@ Page({
   
   // 处理获取用户信息
   handleGetUserProfile() {
+    // 检查用户是否已同意隐私政策
+    if (!this.data.privacyChecked) {
+      Message.error({
+        context: this,
+        offset: [20, 32],
+        duration: 2000,
+        content: '请先阅读并同意《用户协议与隐私政策》'
+      });
+      return;
+    }
+    
     wx.getUserProfile({
       desc: '用于完善会员资料',
       success: (res) => {
@@ -103,11 +116,30 @@ Page({
   
   // 显示隐私政策
   showPrivacyPolicy() {
-    wx.showModal({
-      title: '用户协议与隐私政策',
-      content: '我们非常重视您的个人信息和隐私保护。您授权后，我们将获取您的昵称、头像等信息，仅用于提供更好的预约服务体验。我们承诺不会将您的信息用于其他用途或向第三方透露。',
-      showCancel: false,
-      confirmText: '我知道了'
+    this.setData({
+      showPrivacyDialog: true
+    });
+  },
+  
+  // 关闭隐私政策弹窗
+  closePrivacyDialog() {
+    this.setData({
+      showPrivacyDialog: false
+    });
+  },
+  
+  // 切换隐私政策勾选状态
+  togglePrivacyCheck() {
+    this.setData({
+      privacyChecked: !this.data.privacyChecked
+    });
+  },
+  
+  // 同意隐私政策
+  agreePrivacy() {
+    this.setData({
+      privacyChecked: true,
+      showPrivacyDialog: false
     });
   }
 }); 

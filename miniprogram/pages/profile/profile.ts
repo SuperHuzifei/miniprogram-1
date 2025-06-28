@@ -71,29 +71,62 @@ function getStatusClass(status: string): string {
   return '';
 }
 
+// 工具函数：判断是否为工作日优惠（周一至周四）
+function isWorkdayDiscount(dateString: string): boolean {
+  if (!dateString) return false;
+  
+  const date = new Date(dateString);
+  const dayOfWeek = date.getDay(); // 0是周日，1-6是周一至周六
+  
+  // 周一至周四 (1-4) 享受工作日优惠
+  return dayOfWeek >= 1 && dayOfWeek <= 4;
+}
+
 // 工具函数：计算价格
-function calculateAmount(hours: number): number {
+function calculateAmount(hours: number, dateString?: string): number {
   if (hours === 0) return 0;
   if (hours === 1) return 45; // 1小时45元
   
-  // 优惠价格计算
-  if (hours === 2) {
-    return 70; // 前2小时70元
-  } else if (hours === 3) {
-    return 105; // 3小时 = 70 + 35
-  } else if (hours === 4) {
-    return 135; // 4小时 = 70 + 35 + 35 - 5
-  } else if (hours === 5) {
-    return 170; // 5小时 = 135 + 35
-  } else if (hours === 6) {
-    return 195; // 6小时 = 170 + 35 - 10
-  } else if (hours === 7) {
-    return 220; // 7小时 = 195 + 35 - 10
-  } else if (hours >= 8) {
-    return 220; // 8小时及以上封顶220元
+  // 原价计算（每小时35元）
+  const originalPrice = hours * 35;
+  
+  // 检查是否为工作日
+  const isWorkday = dateString ? isWorkdayDiscount(dateString) : false;
+  
+  // 如果是工作日且预约6小时及以上，直接返回185元封顶价格
+  if (isWorkday && hours >= 6) {
+    return 185; // 工作日6小时及以上直接返回185元
   }
   
-  return hours * 35; // 默认情况，每小时35元
+  // 优惠价格计算
+  let discountedPrice = 0;
+  
+  if (hours === 2) {
+    discountedPrice = 70; // 前2小时70元
+  } else if (hours === 3) {
+    discountedPrice = 105; // 3小时 = 70 + 35
+  } else if (hours === 4) {
+    discountedPrice = 135; // 4小时 = 70 + 35 + 35 - 5
+  } else if (hours === 5) {
+    discountedPrice = 170; // 5小时 = 135 + 35
+  } else if (hours === 6) {
+    discountedPrice = 195; // 6小时 = 170 + 35 - 10
+  } else if (hours === 7) {
+    discountedPrice = 220; // 7小时 = 195 + 35 - 10
+  } else if (hours >= 8) {
+    discountedPrice = 220; // 8小时及以上封顶220元
+  }
+  
+  // 工作日优惠（周一至周四）
+  let finalPrice = discountedPrice;
+  
+  if (isWorkday) {
+    // 工作日每小时减5元
+    const workdayDiscountAmount = hours * 5;
+    finalPrice = Math.max(discountedPrice - workdayDiscountAmount, 0); // 确保价格不小于0
+  }
+  
+  return finalPrice;
 }
 
 Page({
@@ -171,7 +204,7 @@ Page({
           
           // 如果没有金额，根据小时数计算
           if (!item.amount && item.hours) {
-            item.amount = calculateAmount(item.hours);
+            item.amount = calculateAmount(item.hours, item.date);
           }
           
           return {

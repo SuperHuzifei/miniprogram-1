@@ -35,6 +35,8 @@ Page({
     currentPrice: 0, // 添加当前价格字段
     originalPrice: 0,
     discountAmount: 0,
+    isWorkdayDiscount: false, // 是否为工作日优惠
+    workdayDiscountAmount: 0, // 工作日优惠金额
   },
   
   onLoad() {
@@ -378,6 +380,20 @@ Page({
     // 原价计算（每小时35元）
     const originalPrice = hours * 35;
     
+    // 检查是否为工作日
+    const isWorkdayDiscount = this.isWorkdayDiscount();
+    
+    // 如果是工作日且预约6小时及以上，直接返回185元封顶价格
+    if (isWorkdayDiscount && hours >= 6) {
+      this.setData({
+        originalPrice: originalPrice,
+        discountAmount: originalPrice - 220, // 先按照普通价格计算优惠
+        isWorkdayDiscount: true,
+        workdayDiscountAmount: 220 - 185 // 工作日额外优惠
+      });
+      return 185; // 工作日6小时及以上直接返回185元
+    }
+    
     // 优惠价格计算
     let discountedPrice = 0;
     
@@ -397,13 +413,37 @@ Page({
       discountedPrice = 220; // 8小时及以上封顶220元
     }
     
-    // 保存原价和优惠金额
+    // 工作日优惠（周一至周四）
+    let finalPrice = discountedPrice;
+    let workdayDiscountAmount = 0;
+    
+    if (isWorkdayDiscount) {
+      // 工作日每小时减5元
+      workdayDiscountAmount = hours * 5;
+      finalPrice = Math.max(discountedPrice - workdayDiscountAmount, 0); // 确保价格不小于0
+    }
+    
+    // 保存原价、优惠金额和工作日优惠信息
     this.setData({
       originalPrice: originalPrice,
-      discountAmount: originalPrice - discountedPrice
+      discountAmount: originalPrice - discountedPrice,
+      isWorkdayDiscount: isWorkdayDiscount,
+      workdayDiscountAmount: workdayDiscountAmount
     });
     
-    return discountedPrice;
+    return finalPrice;
+  },
+  
+  // 检查是否为工作日优惠（周一至周四）
+  isWorkdayDiscount() {
+    if (!this.data.selectedDate) return false;
+    
+    const { year, month, day } = this.data.selectedDate;
+    const date = new Date(year, month - 1, day); // 月份从0开始
+    const dayOfWeek = date.getDay(); // 0是周日，1-6是周一至周六
+    
+    // 周一至周四 (1-4) 享受工作日优惠
+    return dayOfWeek >= 1 && dayOfWeek <= 4;
   },
   
   // 上个月
@@ -522,7 +562,8 @@ Page({
       data: {
         date: formattedDate,
         times: selectedTimes,
-        phone: phoneNumber
+        phone: phoneNumber,
+        amount: currentPrice // 添加价格信息
       },
       success: (res: any) => {
         wx.hideLoading();
@@ -578,7 +619,9 @@ Page({
       phoneNumber: '',
       currentPrice: 0,
       originalPrice: 0,
-      discountAmount: 0
+      discountAmount: 0,
+      isWorkdayDiscount: false,
+      workdayDiscountAmount: 0
     });
   }
 }); 

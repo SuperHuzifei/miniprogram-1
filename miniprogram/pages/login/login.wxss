@@ -72,11 +72,33 @@
   margin-bottom: 40rpx;
 }
 
-.privacy-policy {
-  text-align: center;
-  font-size: 24rpx;
-  color: #999;
-  margin-top: 20rpx;
+/* 隐私政策勾选框样式 */
+.privacy-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding: 10rpx;
+}
+
+.checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #ccc;
+  border-radius: 6rpx;
+  margin-right: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox.checked {
+  background-color: #0052d9;
+  border-color: #0052d9;
+}
+
+.checkbox-text {
+  font-size: 26rpx;
+  color: #666;
 }
 
 .policy-link {

@@ -24,10 +24,16 @@
   </view>
   
   <view class="login-footer">
-    <t-button theme="primary" size="large" block bind:tap="handleGetUserProfile">微信授权登录</t-button>
-    <view class="privacy-policy" bind:tap="showPrivacyPolicy">
-      登录即代表您已同意<text class="policy-link">《用户协议与隐私政策》</text>
+    <view class="privacy-checkbox" bindtap="togglePrivacyCheck">
+      <view class="checkbox {{privacyChecked ? 'checked' : ''}}">
+        <t-icon wx:if="{{privacyChecked}}" name="check" size="32rpx" color="#ffffff" />
+      </view>
+      <view class="checkbox-text">
+        我已阅读并同意<text class="policy-link" catchtap="showPrivacyPolicy">《用户协议与隐私政策》</text>
+      </view>
     </view>
+    
+    <t-button theme="primary" size="large" block bind:tap="handleGetUserProfile" disabled="{{!privacyChecked}}">微信授权登录</t-button>
   </view>
 </view>
 
@@ -39,6 +45,16 @@
   cancel-btn="暂不授权"
   bind:confirm="handleGetUserProfile"
   bind:cancel="navigateBack"
+/>
+
+<t-dialog
+  visible="{{showPrivacyDialog}}"
+  title="用户协议与隐私政策"
+  content="我们非常重视您的个人信息和隐私保护。您授权后，我们将获取您的昵称、头像等信息，仅用于提供更好的预约服务体验。我们承诺不会将您的信息用于其他用途或向第三方透露。"
+  confirm-btn="同意"
+  cancel-btn="不同意"
+  bind:confirm="agreePrivacy"
+  bind:cancel="closePrivacyDialog"
 />
 
 <t-message id="t-message" /> 

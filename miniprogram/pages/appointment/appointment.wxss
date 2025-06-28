@@ -278,6 +278,11 @@
   text-align: center;
 }
 
+.workday-tip {
+  color: #0052d9;
+  margin-top: 8rpx;
+}
+
 /* Phone Input */
 .phone-input {
   margin-bottom: 40rpx;

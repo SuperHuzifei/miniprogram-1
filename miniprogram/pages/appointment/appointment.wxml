@@ -96,12 +96,19 @@
         <view class="price-label">优惠</view>
         <view class="price-value discount-value">-¥{{discountAmount}}</view>
       </view>
+      <view class="price-info" wx:if="{{isWorkdayDiscount && workdayDiscountAmount > 0}}">
+        <view class="price-label">工作日优惠</view>
+        <view class="price-value discount-value">-¥{{workdayDiscountAmount}}</view>
+      </view>
       <view class="price-info">
         <view class="price-label">实付金额</view>
         <view class="price-amount">¥{{currentPrice}}</view>
       </view>
       <view class="price-tip" wx:if="{{selectedTimeSlots.length >= 4}}">
         每多预约2小时优惠5元，当日费用封顶220元
+      </view>
+      <view class="price-tip workday-tip" wx:if="{{isWorkdayDiscount}}">
+        周一至周四工作日优惠，每小时减5元，工作日费用封顶185元
       </view>
     </view>
     
