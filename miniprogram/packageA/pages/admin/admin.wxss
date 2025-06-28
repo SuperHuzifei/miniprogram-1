@@ -418,4 +418,77 @@
   font-size: 24rpx;
   color: #666;
   line-height: 1.6;
+}
+
+/* 价格配置管理 */
+.price-management {
+  padding: 20rpx;
+}
+
+.price-form {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.form-section {
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-subtitle {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+  border-left: 4rpx solid #0052d9;
+}
+
+.form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+
+.form-input {
+  width: 200rpx;
+  height: 70rpx;
+  border: 1px solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  text-align: right;
+  font-size: 26rpx;
+}
+
+.price-tips {
+  margin-top: 30rpx;
+  background-color: #f9f9f9;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
 } 

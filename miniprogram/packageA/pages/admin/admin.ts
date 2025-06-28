@@ -1,6 +1,98 @@
 // 引入消息提示组件
 import Message from 'tdesign-miniprogram/message/index';
 
+// 定义价格配置接口
+interface PriceConfig {
+  basePrice: number; // 第一小时价格
+  hourlyPrice: number; // 后续每小时价格
+  twoHoursPrice: number; // 2小时特价
+  workdayDiscount: number; // 工作日每小时优惠金额
+  workdayMaxPrice: number; // 工作日封顶价格
+  workdayMaxHours: number; // 工作日封顶小时数
+  weekendMaxPrice: number; // 周末封顶价格
+  weekendMaxHours: number; // 周末封顶小时数
+  fourHoursDiscount: number; // 4小时优惠
+  sixHoursDiscount: number; // 6小时优惠
+  sevenHoursDiscount: number; // 7小时优惠
+}
+
+// 工具函数：判断是否为工作日优惠（周一至周四）
+function isWorkdayDiscount(dateString: string): boolean {
+  if (!dateString) return false;
+  
+  const date = new Date(dateString);
+  const dayOfWeek = date.getDay(); // 0是周日，1-6是周一至周六
+  
+  // 周一至周四 (1-4) 享受工作日优惠
+  return dayOfWeek >= 1 && dayOfWeek <= 4;
+}
+
+// 工具函数：计算价格
+function calculateAmount(hours: number, dateString?: string, priceConfig?: any): number {
+  if (hours === 0) return 0;
+  
+  // 使用传入的价格配置或默认配置
+  const config = priceConfig || {
+    basePrice: 45, // 第一小时价格
+    hourlyPrice: 35, // 后续每小时价格
+    twoHoursPrice: 70, // 2小时特价
+    workdayDiscount: 5, // 工作日每小时优惠金额
+    workdayMaxPrice: 185, // 工作日封顶价格
+    workdayMaxHours: 6, // 工作日封顶小时数
+    weekendMaxPrice: 220, // 周末封顶价格
+    weekendMaxHours: 8, // 周末封顶小时数
+    fourHoursDiscount: 5, // 4小时优惠
+    sixHoursDiscount: 10, // 6小时优惠
+    sevenHoursDiscount: 10 // 7小时优惠
+  };
+  
+  if (hours === 1) return config.basePrice; // 1小时使用基础价格
+  
+  // 原价计算（每小时价格）
+  const originalPrice = config.basePrice + (hours - 1) * config.hourlyPrice;
+  
+  // 检查是否为工作日
+  const isWorkday = dateString ? isWorkdayDiscount(dateString) : false;
+  
+  // 如果是工作日且预约达到或超过封顶小时数，直接返回工作日封顶价格
+  if (isWorkday && hours >= config.workdayMaxHours) {
+    return config.workdayMaxPrice; // 工作日封顶价格
+  }
+  
+  // 优惠价格计算
+  let discountedPrice = 0;
+  
+  if (hours === 2) {
+    discountedPrice = config.twoHoursPrice; // 2小时特价
+  } else if (hours === 3) {
+    discountedPrice = config.twoHoursPrice + config.hourlyPrice; // 3小时 = 2小时特价 + 1小时
+  } else if (hours === 4) {
+    discountedPrice = config.twoHoursPrice + 2 * config.hourlyPrice - config.fourHoursDiscount; // 4小时优惠
+  } else if (hours === 5) {
+    discountedPrice = config.twoHoursPrice + 3 * config.hourlyPrice - config.fourHoursDiscount;
+  } else if (hours === 6) {
+    discountedPrice = config.twoHoursPrice + 4 * config.hourlyPrice - config.fourHoursDiscount - config.sixHoursDiscount;
+  } else if (hours === 7) {
+    discountedPrice = config.twoHoursPrice + 5 * config.hourlyPrice - config.fourHoursDiscount - config.sixHoursDiscount - config.sevenHoursDiscount;
+  } else if (hours >= config.weekendMaxHours) {
+    discountedPrice = config.weekendMaxPrice; // 周末封顶价格
+  } else {
+    // 其他情况，按小时计算
+    discountedPrice = config.basePrice + (hours - 1) * config.hourlyPrice;
+  }
+  
+  // 工作日优惠（周一至周四）
+  let finalPrice = discountedPrice;
+  
+  if (isWorkday) {
+    // 工作日每小时优惠
+    const workdayDiscountAmount = hours * config.workdayDiscount;
+    finalPrice = Math.max(discountedPrice - workdayDiscountAmount, 0); // 确保价格不小于0
+  }
+  
+  return finalPrice;
+}
+
 // 管理员页面
 Page({
   data: {
@@ -41,7 +133,22 @@ Page({
     
     // 轮播图管理
     bannerImages: [],
-    bannerImagesChanged: false
+    bannerImagesChanged: false,
+    
+    // 价格配置管理
+    priceConfig: {
+      basePrice: 45, // 第一小时价格
+      hourlyPrice: 35, // 后续每小时价格
+      twoHoursPrice: 70, // 2小时特价
+      workdayDiscount: 5, // 工作日每小时优惠金额
+      workdayMaxPrice: 185, // 工作日封顶价格
+      workdayMaxHours: 6, // 工作日封顶小时数
+      weekendMaxPrice: 220, // 周末封顶价格
+      weekendMaxHours: 8, // 周末封顶小时数
+      fourHoursDiscount: 5, // 4小时优惠
+      sixHoursDiscount: 10, // 6小时优惠
+      sevenHoursDiscount: 10 // 7小时优惠
+    } as PriceConfig
   },
 
   onLoad() {
@@ -118,6 +225,11 @@ Page({
     // 如果切换到轮播图管理标签，加载轮播图数据
     if (value === 'banner' && this.data.bannerImages.length === 0) {
       this.loadBannerImages();
+    }
+    
+    // 如果切换到价格配置标签，加载价格配置
+    if (value === 'price') {
+      this.loadPriceConfig();
     }
   },
   
@@ -225,6 +337,9 @@ Page({
       
       const { appointments, total } = result.result as { appointments: any[], total: number };
       
+      // 获取价格配置
+      const priceConfig = getApp<IAppOption>().globalData.priceConfig || this.data.priceConfig;
+      
       // 处理数据，添加格式化字段和状态样式
       const processedAppointments = appointments.map(item => {
         // 格式化时间
@@ -249,10 +364,18 @@ Page({
             statusClass = '';
         }
         
+        // 如果没有金额，根据小时数计算
+        let amount = item.amount;
+        if (!amount && item.times) {
+          const hours = item.times.length;
+          amount = calculateAmount(hours, item.date, priceConfig);
+        }
+        
         return {
           ...item,
           timeFormatted,
-          statusClass
+          statusClass,
+          amount
         };
       });
       
@@ -794,31 +917,121 @@ Page({
     }
   },
   
-  // 跳转到管理员页面
-  goToAdmin() {
-    // 如果未登录，提示先登录
-    if (!this.data.isLogin) {
-      Message.info({
+  // 加载价格配置
+  async loadPriceConfig() {
+    try {
+      this.setData({ loading: true });
+      
+      // 优先使用全局价格配置
+      const globalConfig = getApp<IAppOption>().globalData.priceConfig;
+      if (globalConfig) {
+        this.setData({
+          priceConfig: globalConfig,
+          loading: false
+        });
+        return;
+      }
+      
+      // 调用云函数获取价格配置
+      const result = await wx.cloud.callFunction({
+        name: 'getPriceConfig'
+      });
+      
+      const { success, data } = result.result as { success: boolean, data: PriceConfig };
+      
+      if (success && data) {
+        // 更新价格配置
+        this.setData({
+          priceConfig: data,
+          loading: false
+        });
+        
+        // 同时更新全局配置
+        getApp<IAppOption>().globalData.priceConfig = data;
+      } else {
+        this.setData({ loading: false });
+      }
+    } catch (error) {
+      console.error('加载价格配置失败', error);
+      this.setData({ loading: false });
+      Message.error({
         context: this,
         offset: [20, 32],
-        duration: 2000,
-        content: '请先登录'
+        content: '加载价格配置失败'
       });
-      return;
     }
+  },
+  
+  // 处理价格输入
+  onPriceInput(e: any) {
+    const { field } = e.currentTarget.dataset;
+    const value = parseFloat(e.detail.value) || 0;
     
-    // 跳转到管理员页面
-    wx.navigateTo({
-      url: '/packageA/pages/admin/admin',
-      fail: (err) => {
-        console.error('跳转到管理员页面失败', err);
+    // 更新对应字段的值
+    this.setData({
+      [`priceConfig.${field}`]: value
+    });
+  },
+  
+  // 保存价格配置
+  async savePriceConfig() {
+    try {
+      // 显示加载提示
+      wx.showLoading({ title: '保存中...' });
+      
+      // 调用云函数更新价格配置
+      const result = await wx.cloud.callFunction({
+        name: 'updatePriceConfig',
+        data: {
+          priceConfig: this.data.priceConfig
+        }
+      });
+      
+      wx.hideLoading();
+      
+      console.log('保存价格配置结果:', result);
+      
+      const { success, message, data } = result.result as { success: boolean, message: string, data: PriceConfig };
+      
+      if (success) {
+        // 更新全局价格配置
+        getApp<IAppOption>().globalData.priceConfig = data;
+        
+        Message.success({
+          context: this,
+          offset: [20, 32],
+          content: '价格配置保存成功'
+        });
+      } else {
+        console.error('保存失败:', message);
+        wx.showModal({
+          title: '保存失败',
+          content: message || '未知错误',
+          showCancel: false
+        });
+        
         Message.error({
           context: this,
           offset: [20, 32],
-          duration: 2000,
-          content: '页面跳转失败'
+          content: message || '保存失败'
         });
       }
-    });
-  }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('保存价格配置失败', error);
+      
+      // 显示详细错误信息
+      wx.showModal({
+        title: '保存失败',
+        content: '错误信息: ' + (error.message || JSON.stringify(error)),
+        showCancel: false
+      });
+      
+      Message.error({
+        context: this,
+        offset: [20, 32],
+        content: '保存价格配置失败: ' + (error.message || '')
+      });
+    }
+  },
 }); 

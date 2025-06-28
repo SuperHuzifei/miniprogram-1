@@ -37,12 +37,16 @@ Page({
     discountAmount: 0,
     isWorkdayDiscount: false, // 是否为工作日优惠
     workdayDiscountAmount: 0, // 工作日优惠金额
+    priceConfig: null, // 价格配置
+    loadingPriceConfig: false, // 加载价格配置状态
   },
   
   onLoad() {
     // 检查登录状态
     this.checkLoginStatus();
     this.generateCalendar();
+    // 加载价格配置
+    this.loadPriceConfig();
   },
   
   onShow() {
@@ -375,42 +379,61 @@ Page({
   // 计算价格
   calculatePrice(hours) {
     if (hours === 0) return 0;
-    if (hours === 1) return 45; // 1小时45元
     
-    // 原价计算（每小时35元）
-    const originalPrice = hours * 35;
+    // 优先使用全局价格配置，如果不可用则使用页面配置，最后使用默认值
+    const config = app.globalData.priceConfig || this.data.priceConfig || {
+      basePrice: 45, // 第一小时价格
+      hourlyPrice: 35, // 后续每小时价格
+      twoHoursPrice: 70, // 2小时特价
+      workdayDiscount: 5, // 工作日每小时优惠金额
+      workdayMaxPrice: 185, // 工作日封顶价格
+      workdayMaxHours: 6, // 工作日封顶小时数
+      weekendMaxPrice: 220, // 周末封顶价格
+      weekendMaxHours: 8, // 周末封顶小时数
+      fourHoursDiscount: 5, // 4小时优惠
+      sixHoursDiscount: 10, // 6小时优惠
+      sevenHoursDiscount: 10 // 7小时优惠
+    };
+    
+    if (hours === 1) return config.basePrice; // 1小时使用基础价格
+    
+    // 原价计算（每小时价格）
+    const originalPrice = config.basePrice + (hours - 1) * config.hourlyPrice;
     
     // 检查是否为工作日
     const isWorkdayDiscount = this.isWorkdayDiscount();
     
-    // 如果是工作日且预约6小时及以上，直接返回185元封顶价格
-    if (isWorkdayDiscount && hours >= 6) {
+    // 如果是工作日且预约达到或超过封顶小时数，直接返回工作日封顶价格
+    if (isWorkdayDiscount && hours >= config.workdayMaxHours) {
       this.setData({
         originalPrice: originalPrice,
-        discountAmount: originalPrice - 220, // 先按照普通价格计算优惠
+        discountAmount: originalPrice - config.workdayMaxPrice, // 修正为工作日封顶价格
         isWorkdayDiscount: true,
-        workdayDiscountAmount: 220 - 185 // 工作日额外优惠
+        workdayDiscountAmount: originalPrice - config.workdayMaxPrice // 修正工作日优惠计算
       });
-      return 185; // 工作日6小时及以上直接返回185元
+      return config.workdayMaxPrice; // 工作日封顶价格
     }
     
     // 优惠价格计算
     let discountedPrice = 0;
     
     if (hours === 2) {
-      discountedPrice = 70; // 前2小时70元
+      discountedPrice = config.twoHoursPrice; // 2小时特价
     } else if (hours === 3) {
-      discountedPrice = 105; // 3小时 = 70 + 35
+      discountedPrice = config.twoHoursPrice + config.hourlyPrice; // 3小时 = 2小时特价 + 1小时
     } else if (hours === 4) {
-      discountedPrice = 135; // 4小时 = 70 + 35 + 35 - 5
+      discountedPrice = config.twoHoursPrice + 2 * config.hourlyPrice - config.fourHoursDiscount; // 4小时优惠
     } else if (hours === 5) {
-      discountedPrice = 170; // 5小时 = 135 + 35
+      discountedPrice = config.twoHoursPrice + 3 * config.hourlyPrice - config.fourHoursDiscount;
     } else if (hours === 6) {
-      discountedPrice = 195; // 6小时 = 170 + 35 - 10
+      discountedPrice = config.twoHoursPrice + 4 * config.hourlyPrice - config.fourHoursDiscount - config.sixHoursDiscount;
     } else if (hours === 7) {
-      discountedPrice = 220; // 7小时 = 195 + 35 - 10
-    } else if (hours >= 8) {
-      discountedPrice = 220; // 8小时及以上封顶220元
+      discountedPrice = config.twoHoursPrice + 5 * config.hourlyPrice - config.fourHoursDiscount - config.sixHoursDiscount - config.sevenHoursDiscount;
+    } else if (hours >= config.weekendMaxHours) {
+      discountedPrice = config.weekendMaxPrice; // 周末封顶价格
+    } else {
+      // 其他情况，按小时计算
+      discountedPrice = config.basePrice + (hours - 1) * config.hourlyPrice;
     }
     
     // 工作日优惠（周一至周四）
@@ -418,8 +441,8 @@ Page({
     let workdayDiscountAmount = 0;
     
     if (isWorkdayDiscount) {
-      // 工作日每小时减5元
-      workdayDiscountAmount = hours * 5;
+      // 工作日每小时优惠
+      workdayDiscountAmount = hours * config.workdayDiscount;
       finalPrice = Math.max(discountedPrice - workdayDiscountAmount, 0); // 确保价格不小于0
     }
     
@@ -623,5 +646,57 @@ Page({
       isWorkdayDiscount: false,
       workdayDiscountAmount: 0
     });
-  }
+  },
+  
+  // 加载价格配置
+  async loadPriceConfig() {
+    // 如果全局已有价格配置，直接使用
+    if (app.globalData.priceConfig) {
+      this.setData({
+        priceConfig: app.globalData.priceConfig,
+        loadingPriceConfig: false
+      });
+      
+      // 如果已选择时间段，重新计算价格
+      if (this.data.selectedTimeSlots.length > 0) {
+        const hours = this.data.selectedTimeSlots.length;
+        const price = this.calculatePrice(hours);
+        this.setData({ currentPrice: price });
+      }
+      
+      return;
+    }
+    
+    this.setData({ loadingPriceConfig: true });
+    
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'getPriceConfig'
+      });
+      
+      const { success, data } = result.result as any;
+      
+      if (success && data) {
+        // 更新本地和全局价格配置
+        this.setData({
+          priceConfig: data,
+          loadingPriceConfig: false
+        });
+        
+        app.globalData.priceConfig = data;
+        
+        // 如果已选择时间段，重新计算价格
+        if (this.data.selectedTimeSlots.length > 0) {
+          const hours = this.data.selectedTimeSlots.length;
+          const price = this.calculatePrice(hours);
+          this.setData({ currentPrice: price });
+        }
+      } else {
+        this.setData({ loadingPriceConfig: false });
+      }
+    } catch (error) {
+      console.error('加载价格配置失败', error);
+      this.setData({ loadingPriceConfig: false });
+    }
+  },
 }); 

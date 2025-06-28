@@ -36,6 +36,7 @@
       <t-tab-panel label="用户管理" value="users" />
       <t-tab-panel label="预约管理" value="appointments" />
       <t-tab-panel label="轮播图管理" value="banner" />
+      <t-tab-panel label="价格配置" value="price" />
     </t-tabs>
     
     <!-- 用户管理 -->
@@ -227,6 +228,168 @@
           <view class="tip-item">1. 点击图片可预览</view>
           <view class="tip-item">2. 建议上传宽高比为 2:1 的图片</view>
           <view class="tip-item">3. 最多可添加5张轮播图</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 价格配置管理 -->
+    <view class="tab-content" wx:if="{{activeTab === 'price'}}">
+      <view class="price-management">
+        <view class="section-title">价格配置管理</view>
+        
+        <!-- 价格配置表单 -->
+        <view class="price-form">
+          <!-- 基本价格 -->
+          <view class="form-section">
+            <view class="section-subtitle">基本价格设置</view>
+            
+            <view class="form-item">
+              <text class="form-label">首小时价格（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.basePrice}}" 
+                bindinput="onPriceInput" 
+                data-field="basePrice"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">后续每小时价格（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.hourlyPrice}}" 
+                bindinput="onPriceInput" 
+                data-field="hourlyPrice"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">2小时特价（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.twoHoursPrice}}" 
+                bindinput="onPriceInput" 
+                data-field="twoHoursPrice"
+              />
+            </view>
+          </view>
+          
+          <!-- 工作日优惠 -->
+          <view class="form-section">
+            <view class="section-subtitle">工作日优惠（周一至周四）</view>
+            
+            <view class="form-item">
+              <text class="form-label">每小时优惠（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.workdayDiscount}}" 
+                bindinput="onPriceInput" 
+                data-field="workdayDiscount"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">封顶小时数</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.workdayMaxHours}}" 
+                bindinput="onPriceInput" 
+                data-field="workdayMaxHours"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">封顶价格（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.workdayMaxPrice}}" 
+                bindinput="onPriceInput" 
+                data-field="workdayMaxPrice"
+              />
+            </view>
+          </view>
+          
+          <!-- 周末价格 -->
+          <view class="form-section">
+            <view class="section-subtitle">周末价格（周五至周日）</view>
+            
+            <view class="form-item">
+              <text class="form-label">封顶小时数</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.weekendMaxHours}}" 
+                bindinput="onPriceInput" 
+                data-field="weekendMaxHours"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">封顶价格（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.weekendMaxPrice}}" 
+                bindinput="onPriceInput" 
+                data-field="weekendMaxPrice"
+              />
+            </view>
+          </view>
+          
+          <!-- 其他优惠 -->
+          <view class="form-section">
+            <view class="section-subtitle">其他优惠设置</view>
+            
+            <view class="form-item">
+              <text class="form-label">4小时优惠（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.fourHoursDiscount}}" 
+                bindinput="onPriceInput" 
+                data-field="fourHoursDiscount"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">6小时优惠（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.sixHoursDiscount}}" 
+                bindinput="onPriceInput" 
+                data-field="sixHoursDiscount"
+              />
+            </view>
+            
+            <view class="form-item">
+              <text class="form-label">7小时优惠（元）</text>
+              <input 
+                class="form-input" 
+                type="digit" 
+                value="{{priceConfig.sevenHoursDiscount}}" 
+                bindinput="onPriceInput" 
+                data-field="sevenHoursDiscount"
+              />
+            </view>
+          </view>
+        </view>
+        
+        <!-- 保存按钮 -->
+        <view class="save-button">
+          <t-button theme="primary" block bind:tap="savePriceConfig">保存价格配置</t-button>
+        </view>
+        
+        <!-- 提示 -->
+        <view class="price-tips">
+          <view class="tip-item">1. 修改价格配置后，新的预约将使用新价格</view>
+          <view class="tip-item">2. 价格修改不会影响已创建的预约</view>
         </view>
       </view>
     </view>
